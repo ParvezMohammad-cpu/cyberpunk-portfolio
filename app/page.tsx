@@ -5,6 +5,7 @@ import { useBootSequenceVisibility } from "@/components/boot/useBootSequenceVisi
 import { BootSequence } from "@/components/boot/BootSequence";
 import { Hud } from "@/components/hud/Hud";
 import { ScanlineOverlay } from "@/components/ui/ScanlineOverlay";
+import { SkipLink } from "@/components/ui/SkipLink";
 import { IntroSection } from "@/components/sections/IntroSection";
 import { EngineeringSection } from "@/components/sections/EngineeringSection";
 import { ProjectsSection } from "@/components/sections/ProjectsSection";
@@ -24,9 +25,10 @@ export default function Home() {
 
       {shouldShowBoot === false && (
         <>
+          <SkipLink />
           <ScanlineOverlay />
           <Hud lenisRef={lenisRef} />
-          <main>
+          <main id="main-content" tabIndex={-1}>
             <IntroSection />
             <EngineeringSection />
             <ProjectsSection />

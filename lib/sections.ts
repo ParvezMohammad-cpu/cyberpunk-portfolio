@@ -15,7 +15,6 @@ export interface SectionMeta {
   id: SectionId;
   number: string;
   label: string;
-  /** Placeholder tagline — real content arrives in Phase 2. */
   tagline: string;
 }
 
@@ -31,31 +30,31 @@ export const SECTIONS: SectionMeta[] = [
     id: "engineering",
     number: "02",
     label: "ENGINEERING",
-    tagline: "ENGINEERING \u2014 coming in Phase 2",
+    tagline: "SYSTEMS, PRODUCTS, AND THE ENGINEERING BEHIND THEM",
   },
   {
     id: "projects",
     number: "03",
     label: "PROJECTS",
-    tagline: "PROJECTS \u2014 coming in Phase 2",
+    tagline: "THINGS I BUILT FROM IDEA TO EXECUTION",
   },
   {
     id: "lab",
     number: "04",
     label: "LAB",
-    tagline: "LAB \u2014 coming in Phase 2",
+    tagline: "EXPERIMENTS IN PROGRESS",
   },
   {
     id: "journey",
     number: "05",
     label: "JOURNEY",
-    tagline: "JOURNEY \u2014 coming in Phase 2",
+    tagline: "THE PATH FROM CURIOSITY TO CRAFT",
   },
   {
     id: "contact",
     number: "06",
     label: "CONTACT",
-    tagline: "CONTACT \u2014 coming in Phase 2",
+    tagline: "OPEN A CHANNEL",
   },
 ];
 

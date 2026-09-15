@@ -10,9 +10,10 @@ export function HudResumeLink() {
       href={RESUME_HREF}
       target="_blank"
       rel="noopener noreferrer"
-      className="pointer-events-auto border border-neon-magenta/50 px-3 py-1.5 font-mono text-[0.65rem] tracking-[0.25em] text-glow-magenta uppercase transition-colors hover:border-neon-magenta"
+      aria-label="Download Parvez's resume"
+      className="pointer-events-auto flex min-h-11 items-center border border-neon-magenta/50 px-3 py-1.5 font-mono text-[0.65rem] tracking-[0.25em] text-glow-magenta uppercase transition-colors hover:border-neon-magenta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan"
     >
-      Resume
+      Resume ↗
     </a>
   );
 }
