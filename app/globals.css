@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+/*
+  THEME.md documents the full cyberpunk visual language. This file wires
+  those design tokens into Tailwind v4's CSS-based theme configuration
+  (`@theme`) plus a handful of reusable effect utilities (glow, glitch,
+  scanlines, grid background) that components/ui/* build on top of.
+*/
+
+:root {
+  /* Base surfaces */
+  --void: #050507;
+  --black-glass: #0a0a0f;
+  --surface: #111117;
+  --border-dim: #22222c;
+
+  /* Neon accents */
+  --neon-cyan: #00fff5;
+  --neon-magenta: #ff2ea6;
+  --neon-purple: #b026ff;
+  --neon-yellow: #f5ff2e;
+
+  /* Text */
+  --fg: #e8e8f0;
+  --fg-dim: #7a7a8c;
+}
+
+@theme inline {
+  --color-void: var(--void);
+  --color-black-glass: var(--black-glass);
+  --color-surface: var(--surface);
+  --color-border-dim: var(--border-dim);
+
+  --color-neon-cyan: var(--neon-cyan);
+  --color-neon-magenta: var(--neon-magenta);
+  --color-neon-purple: var(--neon-purple);
+  --color-neon-yellow: var(--neon-yellow);
+
+  --color-fg: var(--fg);
+  --color-fg-dim: var(--fg-dim);
+
+  --color-background: var(--void);
+  --color-foreground: var(--fg);
+
+  --font-mono: "JetBrains Mono", ui-monospace, "Space Mono", monospace;
+  --font-display: "Orbitron", "JetBrains Mono", ui-monospace, monospace;
+}
+
+/*
+  min-height (not height) so Lenis's ResizeObserver on document.documentElement
+  can detect content growth once the six sections mount — a fixed `height`
+  here would pin the box to the viewport regardless of overflowing content.
+*/
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background: var(--void);
+  color: var(--fg);
+  font-family: var(--font-mono);
+}
+
+/* ------------------------------------------------------------------ */
+/* Effect utilities shared across boot / HUD / section components     */
+/* ------------------------------------------------------------------ */
+
+/* Neon glow text-shadow utilities */
+.text-glow-cyan {
+  color: var(--color-neon-cyan);
+  text-shadow:
+    0 0 4px color-mix(in srgb, var(--color-neon-cyan) 80%, transparent),
+    0 0 16px color-mix(in srgb, var(--color-neon-cyan) 60%, transparent),
+    0 0 40px color-mix(in srgb, var(--color-neon-cyan) 35%, transparent);
+}
+
+.text-glow-magenta {
+  color: var(--color-neon-magenta);
+  text-shadow:
+    0 0 4px color-mix(in srgb, var(--color-neon-magenta) 80%, transparent),
+    0 0 16px color-mix(in srgb, var(--color-neon-magenta) 60%, transparent),
+    0 0 40px color-mix(in srgb, var(--color-neon-magenta) 35%, transparent);
+}
+
+.border-glow-cyan {
+  border-color: var(--color-neon-cyan);
+  box-shadow:
+    0 0 6px color-mix(in srgb, var(--color-neon-cyan) 70%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-neon-cyan) 30%, transparent);
+}
+
+/* Fullscreen scanline overlay */
+.scanline-overlay {
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.035) 0px,
+    rgba(255, 255, 255, 0.035) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Circuit / grid background texture, no external image assets */
+.bg-circuit-grid {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-neon-cyan) 8%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-neon-cyan) 8%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 48px 48px;
+}
+
+/* Glitch text effect: layered clipped duplicates that jitter */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0.8;
+}
+
+.glitch::before {
+  color: var(--color-neon-magenta);
+  animation: glitch-shift-1 2.6s infinite steps(2, end);
+  clip-path: inset(0 0 55% 0);
+}
+
+.glitch::after {
+  color: var(--color-neon-cyan);
+  animation: glitch-shift-2 3.1s infinite steps(2, end);
+  clip-path: inset(55% 0 0 0);
+}
+
+@keyframes glitch-shift-1 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  20% {
+    transform: translate3d(-2px, 1px, 0);
+  }
+  40% {
+    transform: translate3d(2px, -1px, 0);
+  }
+  60% {
+    transform: translate3d(-1px, 0, 0);
+  }
+}
+
+@keyframes glitch-shift-2 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(2px, 0, 0);
+  }
+  50% {
+    transform: translate3d(-2px, 1px, 0);
+  }
+  75% {
+    transform: translate3d(1px, -1px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch::before,
+  .glitch::after {
+    animation: none;
+  }
+}
+
+/* Tiny center point pulse, used at the very start of the boot sequence */
+.boot-point-pulse {
+  animation: boot-point-pulse 1.4s ease-out 1 forwards;
+}
+
+@keyframes boot-point-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(2.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-point-pulse {
+    animation-duration: 0.05s;
+  }
+}
+
+/* Blinking terminal cursor, used by boot sequence typewriter text */
+.terminal-cursor::after {
+  content: "\2588";
+  margin-left: 0.15em;
+  animation: cursor-blink 1s steps(1) infinite;
+}
+
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
