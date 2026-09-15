@@ -3,10 +3,13 @@
 A cyberpunk-themed portfolio for **Parvez**, a Software Engineer, built around
 the identity: **ENGINEER &rarr; BUILDER &rarr; EXPERIMENTER**.
 
-This repo is being built in phases. **Phase 1 (Experience Design)** is
-implemented here: the boot sequence, HUD navigation, visual language,
-animation/interaction foundations, and scaffolding for the six main sections.
-Real section content lands in later phases.
+This repo is being built in phases. **Phase 1 (Experience Design)** shipped
+the boot sequence, HUD navigation, visual language, and animation/interaction
+foundations. **Phase 2 (Core Portfolio)**, implemented here, fills in real
+content and interaction for all six sections: Intro, Engineering, Projects,
+Lab, Journey, and Contact — see `lib/data/` for the typed content models
+backing them, and the "Notes on Phase 2 content" section below for what's
+real vs. placeholder.
 
 ## Tech stack
 
@@ -43,12 +46,14 @@ npm run lint    # ESLint (eslint-config-next + React Compiler rules)
 app/                      Next.js App Router entry (layout, page, globals.css)
 components/
   boot/                    Boot/intro sequence (particles, name reveal, CTA)
-  hud/                     Minimal HUD nav (logo, bracket links, indicator, resume)
-  sections/                The six scaffolded sections (Intro..Contact)
+  hud/                     HUD nav (logo, bracket links + mobile menu, indicator, resume)
+  sections/                The six sections (Intro..Contact) + per-section subcomponents
   three/                   Reusable React Three Fiber Canvas + particle field
-  ui/                      Shared UI: GlitchText, NeonButton, ScanlineOverlay
+  ui/                      Shared UI: GlitchText, NeonButton, ScanlineOverlay, Modal, SkipLink
 hooks/                     useReducedMotion, useLenis, useActiveSection, useScrollReveal
 lib/                       GSAP/ScrollTrigger registration, section/world constants
+lib/data/                  Typed content models + data: projects, experience, capabilities,
+                           architecture layers, lab modules, contact links
 public/resume.pdf          Placeholder resume — swap with the real file later
 ```
 
@@ -69,16 +74,29 @@ typography, effects) that later phases should reuse.
 
 ## Roadmap
 
-- **Phase 1 — Experience Design** *(this PR)*: boot sequence, HUD nav,
-  visual language, GSAP/Lenis/R3F foundations, six scaffolded sections.
-- **Phase 2 — Content**: real content for Engineering, Projects, Lab,
-  Journey, Contact.
-- **Phase 3 — Depth**: richer 3D/ambient backgrounds, case-study detail
-  views, project filtering.
+- **Phase 1 — Experience Design**: boot sequence, HUD nav, visual language,
+  GSAP/Lenis/R3F foundations, six scaffolded sections.
+- **Phase 2 — Core Portfolio** *(this PR)*: real content + interaction for
+  Engineering (capability matrix, accessible architecture layer map),
+  Projects (filters, cards, accessible detail overlay), Lab (module cards
+  with launch/inspect states), Journey (about, expandable experience
+  timeline, resume), Contact (validated form + alt contact links), plus a
+  mobile nav menu and skip-to-content link.
+- **Phase 3 — Depth**: richer 3D/ambient backgrounds, real Lab module
+  builds (Architecture Simulator, System Design Playground, terminal).
 - **Phase 4 — Polish**: micro-interactions, performance tuning, SEO/OG
   metadata, analytics.
 - **Phase 5 — Accessibility & reduced motion**: full `prefers-reduced-motion`
-  compliance across every animated surface, keyboard/focus audit.
+  compliance audit across every animated surface.
+
+## Notes on Phase 2 content
+
+Real project write-ups, employment history, and contact details aren't in
+this repository yet, so `lib/data/projects.ts`, `lib/data/experience.ts`, and
+`lib/data/contact.ts` ship with structurally-real-but-placeholder content.
+Placeholder projects/experience entries render a visible **PLACEHOLDER** tag
+in the UI; swap the data files with verified content and the tag disappears
+automatically (it's driven by an `isPlaceholder` flag, not hardcoded markup).
 
 ## Notes on this implementation
 

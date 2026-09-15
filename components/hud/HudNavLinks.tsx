@@ -20,14 +20,18 @@ export function HudNavLinks({ activeSection, lenisRef }: HudNavLinksProps) {
   };
 
   return (
-    <nav className="pointer-events-auto flex items-center gap-4 font-mono text-xs tracking-[0.2em]">
+    <nav
+      aria-label="Section groups"
+      className="pointer-events-auto hidden items-center gap-4 font-mono text-xs tracking-[0.2em] sm:flex"
+    >
       {HUD_NAV_LINKS.map((link) => {
         const isActive = link.target === activeSection;
         return (
           <button
             key={link.label}
             onClick={() => handleClick(link.target)}
-            className={`transition-colors duration-200 ${
+            aria-current={isActive ? "true" : undefined}
+            className={`transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan ${
               isActive ? "text-glow-cyan" : "text-fg-dim hover:text-fg"
             }`}
           >
