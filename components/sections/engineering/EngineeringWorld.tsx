@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Activity,
   Database,
@@ -88,6 +88,10 @@ const graphNodes = [
 
 const flowSteps = ["USER", "FRONT DOOR", "WAF", "APPLICATION", "DATABASE"];
 
+function selectDistinct<T>(current: T, next: T) {
+  return Object.is(current, next) ? current : next;
+}
+
 export function EngineeringWorld() {
   const prefersReducedMotion = useReducedMotion();
   const [activeModuleId, setActiveModuleId] =
@@ -110,6 +114,15 @@ export function EngineeringWorld() {
     MINDSET_STAGES.find((stage) => stage.id === activeMindset) ??
     MINDSET_STAGES[0];
   const simulator = SIMULATOR_STATE[simulatorMode];
+  const selectModule = useCallback((moduleId: EngineeringModuleId) => {
+    setActiveModuleId((current) => selectDistinct(current, moduleId));
+  }, []);
+  const selectTimeline = useCallback((timelineId: string) => {
+    setActiveTimeline((current) => selectDistinct(current, timelineId));
+  }, []);
+  const selectMindset = useCallback((mindsetId: MindsetId) => {
+    setActiveMindset((current) => selectDistinct(current, mindsetId));
+  }, []);
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -133,12 +146,12 @@ export function EngineeringWorld() {
       <ArchitectureGraph />
       <ModuleConsole
         activeModuleId={activeModuleId}
-        onSelect={setActiveModuleId}
+        onSelect={selectModule}
         activeModule={activeModule}
       />
       <MetricsAndTimeline
         activeTimeline={activeTimeline}
-        onSelectTimeline={setActiveTimeline}
+        onSelectTimeline={selectTimeline}
         timelineEntry={timelineEntry}
       />
       <ArchitectureSimulator
@@ -154,7 +167,7 @@ export function EngineeringWorld() {
       />
       <MindsetConsole
         activeMindset={activeMindset}
-        onSelect={setActiveMindset}
+        onSelect={selectMindset}
         mindset={mindset}
       />
       <div
@@ -433,7 +446,6 @@ function MetricsAndTimeline({
                   aria-selected={isActive}
                   aria-controls={`timeline-panel-${entry.id}`}
                   onClick={() => onSelectTimeline(entry.id)}
-                  onFocus={() => onSelectTimeline(entry.id)}
                   className={`border p-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan ${
                     isActive
                       ? "border-neon-cyan bg-black-glass/90"
