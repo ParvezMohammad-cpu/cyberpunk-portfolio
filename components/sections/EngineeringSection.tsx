@@ -2,10 +2,8 @@
 
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { SECTIONS } from "@/lib/sections";
-import { ENGINEERING_METRICS } from "@/lib/data/capabilities";
 import { SectionShell } from "./SectionShell";
-import { CapabilityGrid } from "./engineering/CapabilityGrid";
-import { ArchitectureMap } from "./engineering/ArchitectureMap";
+import { EngineeringWorld } from "./engineering/EngineeringWorld";
 
 /**
  * 02 — Engineering. Answers "what can Parvez build, and how does he think
@@ -19,33 +17,26 @@ export function EngineeringSection() {
     <SectionShell ref={ref} meta={SECTIONS[1]}>
       <p
         data-reveal
+        className="font-mono text-neon-cyan text-xs tracking-[0.35em] uppercase"
+      >
+        SYSTEM / ENGINEERING
+      </p>
+      <h3
+        data-reveal
+        className="font-display text-fg text-3xl font-bold tracking-[0.18em] uppercase sm:text-5xl"
+      >
+        I BUILD SYSTEMS.
+      </h3>
+      <p
+        data-reveal
         className="font-mono text-fg-dim max-w-xl text-sm leading-relaxed"
       >
-        I build scalable applications and dependable systems across
-        frontend, backend, cloud, data, and DevOps.
+        I turn complex requirements into scalable software: interfaces,
+        APIs, cloud paths, data models, delivery pipelines, and measurable
+        feedback loops that can survive real-world constraints.
       </p>
 
-      <CapabilityGrid />
-      <ArchitectureMap />
-
-      <dl
-        data-reveal
-        className="mt-8 grid w-full max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4"
-      >
-        {ENGINEERING_METRICS.map((metric) => (
-          <div
-            key={metric.label}
-            className="border-border-dim flex flex-col gap-1 border-t pt-3 text-left"
-          >
-            <dt className="font-mono text-fg-dim text-[0.6rem] tracking-[0.2em] uppercase">
-              {metric.label}
-            </dt>
-            <dd className="font-display text-glow-cyan text-sm font-bold tracking-wide">
-              {metric.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      <EngineeringWorld />
     </SectionShell>
   );
 }
