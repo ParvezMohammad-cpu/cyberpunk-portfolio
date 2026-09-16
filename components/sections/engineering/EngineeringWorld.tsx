@@ -24,6 +24,10 @@ import { NeonButton } from "@/components/ui/NeonButton";
 
 type SimulatorMode = "stable" | "broken" | "cache" | "database" | "queue" | "servers";
 
+const REQUEST_TICK_MS = 1200;
+const STABLE_REQUEST_INCREMENT = 29;
+const DEGRADED_REQUEST_INCREMENT = 73;
+
 const SIMULATOR_STATE: Record<
   SimulatorMode,
   { label: string; latency: string; errors: string; load: string; message: string }
@@ -108,8 +112,14 @@ export function EngineeringWorld() {
   useEffect(() => {
     if (prefersReducedMotion) return;
     const interval = window.setInterval(() => {
-      setRequests((value) => value + (simulatorMode === "broken" ? 73 : 29));
-    }, 1200);
+      setRequests(
+        (value) =>
+          value +
+          (simulatorMode === "broken"
+            ? DEGRADED_REQUEST_INCREMENT
+            : STABLE_REQUEST_INCREMENT)
+      );
+    }, REQUEST_TICK_MS);
     return () => window.clearInterval(interval);
   }, [prefersReducedMotion, simulatorMode]);
 
@@ -307,7 +317,6 @@ function ModuleConsole({
                 aria-pressed={isActive}
                 onClick={() => onSelect(module.id)}
                 onFocus={() => onSelect(module.id)}
-                onMouseEnter={() => onSelect(module.id)}
                 className={`group min-h-32 border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan ${
                   isActive
                     ? "border-neon-cyan bg-black-glass/90"
@@ -581,7 +590,7 @@ function ArchitectureSimulator({
               <button
                 key={mitigation.mode}
                 type="button"
-                disabled={mode === "stable"}
+                disabled={mode !== "broken"}
                 onClick={() => onMitigate(mitigation.mode)}
                 className="border-border-dim text-fg-dim border px-3 py-2 text-left font-mono text-xs tracking-[0.18em] uppercase transition hover:border-neon-cyan hover:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan disabled:cursor-not-allowed disabled:opacity-40"
               >
