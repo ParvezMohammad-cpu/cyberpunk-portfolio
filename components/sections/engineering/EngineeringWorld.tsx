@@ -340,7 +340,6 @@ function ModuleConsole({
                 type="button"
                 aria-pressed={isActive}
                 aria-describedby="system-modules-instructions"
-                onClick={() => onSelect(module.id)}
                 onFocus={() => onSelect(module.id)}
                 className={`group min-h-32 border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan ${
                   isActive
@@ -680,7 +679,6 @@ function MindsetConsole({
                 type="button"
                 aria-pressed={isActive}
                 aria-describedby="engineering-mindset-instructions"
-                onClick={() => onSelect(stage.id)}
                 onFocus={() => onSelect(stage.id)}
                 onMouseEnter={() => onSelect(stage.id)}
                 className={`border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan ${
