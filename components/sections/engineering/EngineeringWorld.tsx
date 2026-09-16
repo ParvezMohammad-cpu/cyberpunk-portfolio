@@ -25,9 +25,11 @@ import { NeonButton } from "@/components/ui/NeonButton";
 type SimulatorMode = "stable" | "broken" | "cache" | "database" | "queue" | "servers";
 
 const REQUEST_TICK_MS = 1200;
+// Chosen to create visibly different demo traffic rates without implying real telemetry.
 const STABLE_REQUEST_INCREMENT = 29;
 const DEGRADED_REQUEST_INCREMENT = 73;
 
+// Simulator values are illustrative client-side states, not measured production metrics.
 const SIMULATOR_STATE: Record<
   SimulatorMode,
   { label: string; latency: string; errors: string; load: string; message: string }
@@ -111,6 +113,7 @@ export function EngineeringWorld() {
 
   useEffect(() => {
     if (prefersReducedMotion) return;
+    // Mitigation modes intentionally settle the counter so the chosen fix is readable.
     if (simulatorMode !== "stable" && simulatorMode !== "broken") return;
 
     const interval = window.setInterval(() => {
