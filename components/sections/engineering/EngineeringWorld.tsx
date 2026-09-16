@@ -111,6 +111,8 @@ export function EngineeringWorld() {
 
   useEffect(() => {
     if (prefersReducedMotion) return;
+    if (simulatorMode !== "stable" && simulatorMode !== "broken") return;
+
     const interval = window.setInterval(() => {
       setRequests(
         (value) =>
@@ -307,6 +309,12 @@ function ModuleConsole({
         >
           Select a node to inspect its subsystem
         </h3>
+        <p
+          id="system-modules-instructions"
+          className="text-fg-dim mt-2 font-mono text-xs leading-relaxed"
+        >
+          Click, tap, or tab to a module to preview its detail panel.
+        </p>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           {ENGINEERING_MODULES.map((module) => {
             const isActive = module.id === activeModuleId;
@@ -315,6 +323,7 @@ function ModuleConsole({
                 key={module.id}
                 type="button"
                 aria-pressed={isActive}
+                aria-describedby="system-modules-instructions"
                 onClick={() => onSelect(module.id)}
                 onFocus={() => onSelect(module.id)}
                 className={`group min-h-32 border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan ${
@@ -639,6 +648,13 @@ function MindsetConsole({
       >
         Scanner loop: understand, design, measure
       </h3>
+      <p
+        id="engineering-mindset-instructions"
+        className="text-fg-dim mt-2 font-mono text-xs leading-relaxed"
+      >
+        Hover, focus, or click a scanner stage to expand the active operating
+        signals.
+      </p>
       <div className="mt-5 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="grid gap-3">
           {MINDSET_STAGES.map((stage) => {
@@ -648,6 +664,7 @@ function MindsetConsole({
                 key={stage.id}
                 type="button"
                 aria-pressed={isActive}
+                aria-describedby="engineering-mindset-instructions"
                 onClick={() => onSelect(stage.id)}
                 onFocus={() => onSelect(stage.id)}
                 onMouseEnter={() => onSelect(stage.id)}
