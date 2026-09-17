@@ -21,18 +21,19 @@ export function useActiveSection(): SectionId {
     const observer = new IntersectionObserver(
       (entries) => {
         const viewportCenter = window.innerHeight / 2;
+        const distanceToViewportCenter = (rect: DOMRectReadOnly) => {
+          if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
+            return 0;
+          }
+          return Math.min(
+            Math.abs(rect.top - viewportCenter),
+            Math.abs(rect.bottom - viewportCenter)
+          );
+        };
+
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => {
-            const distanceToViewportCenter = (rect: DOMRectReadOnly) => {
-              if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
-                return 0;
-              }
-              return Math.min(
-                Math.abs(rect.top - viewportCenter),
-                Math.abs(rect.bottom - viewportCenter)
-              );
-            };
             const aDistance = distanceToViewportCenter(a.boundingClientRect);
             const bDistance = distanceToViewportCenter(b.boundingClientRect);
             if (aDistance === bDistance) {

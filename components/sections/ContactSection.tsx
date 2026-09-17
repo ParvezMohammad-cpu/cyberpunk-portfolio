@@ -6,7 +6,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { SECTIONS } from "@/lib/sections";
 import { CONTACT_ACTIONS } from "@/lib/data/contact";
 
-type OutroState = "idle" | "preview" | "playing" | "complete";
+type OutroState = "idle" | "playing" | "complete";
 
 /**
  * 06 — Contact. A quiet final scene with direct, semantic actions only.
@@ -19,7 +19,6 @@ export function ContactSection() {
   const sectionMeta = SECTIONS[5];
   const displayedOutroState =
     prefersReducedMotion && outroState === "playing" ? "complete" : outroState;
-  const previewLines = ["ENGINEERING OFF", "PROJECTS OFF", "LAB OFF", "JOURNEY OFF"];
   const outroLines =
     displayedOutroState === "complete"
       ? ["> CONNECTION REMAINS OPEN", "PARVEZ", "▌"]
@@ -35,15 +34,6 @@ export function ContactSection() {
   }, [outroState, prefersReducedMotion]);
 
   const restoreContact = () => setOutroState("idle");
-  const previewTriggerHandlers = (triggersPreview?: boolean) =>
-    triggersPreview
-      ? {
-          onFocus: () => outroState === "idle" && setOutroState("preview"),
-          onBlur: () => outroState === "preview" && setOutroState("idle"),
-          onMouseEnter: () => outroState === "idle" && setOutroState("preview"),
-          onMouseLeave: () => outroState === "preview" && setOutroState("idle"),
-        }
-      : {};
 
   // Contact intentionally uses a custom near-empty section instead of
   // SectionShell so the final scene can quiet the HUD/background language while
@@ -86,7 +76,6 @@ export function ContactSection() {
                   download={action.download || undefined}
                   target={action.external ? "_blank" : undefined}
                   rel={action.external ? "noopener noreferrer" : undefined}
-                  {...previewTriggerHandlers(action.triggersPreview)}
                   className="border-border-dim bg-black-glass/70 focus-visible:outline-neon-cyan flex min-h-28 flex-col justify-between border p-4 text-left transition-colors hover:border-neon-cyan focus-visible:outline focus-visible:outline-2"
                 >
                   <span className="font-mono text-xs tracking-[0.25em] text-neon-cyan">
@@ -101,7 +90,6 @@ export function ContactSection() {
                 <button
                   type="button"
                   aria-disabled="true"
-                  {...previewTriggerHandlers(action.triggersPreview)}
                   className="border-border-dim bg-black-glass/40 focus-visible:outline-neon-cyan flex min-h-28 w-full flex-col justify-between border p-4 text-left opacity-70 focus-visible:outline focus-visible:outline-2"
                 >
                   <span className="font-mono text-xs tracking-[0.25em] text-fg-dim">
@@ -139,37 +127,34 @@ export function ContactSection() {
         </div>
       </div>
 
-      {(displayedOutroState === "preview" || displayedOutroState === "playing" || displayedOutroState === "complete") && (
+      {(displayedOutroState === "playing" || displayedOutroState === "complete") && (
         <div
           className="pointer-events-none absolute inset-0 z-20 grid place-items-center bg-void/85 p-6"
-          aria-hidden={displayedOutroState === "preview"}
         >
           <div className="border-border-dim bg-black-glass/90 w-full max-w-md border p-6 text-left">
             <p className="font-mono text-xs leading-loose tracking-[0.2em] text-fg-dim uppercase">
-              {(displayedOutroState === "preview" ? previewLines : outroLines).map((line) => (
+              {outroLines.map((line) => (
                 <span key={line} className="block">
                   {line}
                 </span>
               ))}
             </p>
-            {displayedOutroState !== "preview" && (
-              <div className="pointer-events-auto mt-6 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={restoreContact}
-                  className="border border-neon-cyan px-3 py-2 font-mono text-xs text-neon-cyan"
-                >
-                  Skip / Return
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setOutroState("playing")}
-                  className="border border-border-dim px-3 py-2 font-mono text-xs text-fg-dim"
-                >
-                  Replay
-                </button>
-              </div>
-            )}
+            <div className="pointer-events-auto mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={restoreContact}
+                className="border border-neon-cyan px-3 py-2 font-mono text-xs text-neon-cyan"
+              >
+                Skip / Return
+              </button>
+              <button
+                type="button"
+                onClick={() => setOutroState("playing")}
+                className="border border-border-dim px-3 py-2 font-mono text-xs text-fg-dim"
+              >
+                Replay
+              </button>
+            </div>
           </div>
         </div>
       )}
