@@ -17,19 +17,18 @@ export function ContactSection() {
   const [outroState, setOutroState] = useState<OutroState>("idle");
   const prefersReducedMotion = useReducedMotion();
   const sectionMeta = SECTIONS[5];
+  const displayedOutroState =
+    prefersReducedMotion && outroState === "playing" ? "complete" : outroState;
   const previewLines = ["ENGINEERING OFF", "PROJECTS OFF", "LAB OFF", "JOURNEY OFF"];
   const outroLines =
-    outroState === "complete"
+    displayedOutroState === "complete"
       ? ["> CONNECTION REMAINS OPEN", "PARVEZ", "▌"]
       : ["> SESSION ENDING", "ENGINEERING OFF", "PROJECTS OFF", "LAB OFF", "JOURNEY OFF"];
 
   useEffect(() => {
     if (outroState !== "playing") return;
 
-    if (prefersReducedMotion) {
-      setOutroState("complete");
-      return;
-    }
+    if (prefersReducedMotion) return;
 
     const timer = window.setTimeout(() => setOutroState("complete"), 1800);
     return () => window.clearTimeout(timer);
@@ -52,7 +51,7 @@ export function ContactSection() {
       <div
         data-reveal
         className={`relative z-10 flex w-full max-w-4xl flex-col items-center transition-opacity duration-500 ${
-          outroState === "playing" || outroState === "complete" ? "opacity-25" : "opacity-100"
+          displayedOutroState === "playing" || displayedOutroState === "complete" ? "opacity-25" : "opacity-100"
         }`}
       >
         <p className="font-mono text-fg-dim text-xs tracking-[0.35em] uppercase">
@@ -134,20 +133,20 @@ export function ContactSection() {
         </div>
       </div>
 
-      {(outroState === "preview" || outroState === "playing" || outroState === "complete") && (
+      {(displayedOutroState === "preview" || displayedOutroState === "playing" || displayedOutroState === "complete") && (
         <div
           className="pointer-events-none absolute inset-0 z-20 grid place-items-center bg-void/85 p-6"
-          aria-hidden={outroState === "preview"}
+          aria-hidden={displayedOutroState === "preview"}
         >
           <div className="border-border-dim bg-black-glass/90 w-full max-w-md border p-6 text-left">
             <p className="font-mono text-xs leading-loose tracking-[0.2em] text-fg-dim uppercase">
-              {(outroState === "preview" ? previewLines : outroLines).map((line) => (
+              {(displayedOutroState === "preview" ? previewLines : outroLines).map((line) => (
                 <span key={line} className="block">
                   {line}
                 </span>
               ))}
             </p>
-            {outroState !== "preview" && (
+            {displayedOutroState !== "preview" && (
               <div className="pointer-events-auto mt-6 flex flex-wrap gap-3">
                 <button
                   type="button"
