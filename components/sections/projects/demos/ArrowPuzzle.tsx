@@ -83,6 +83,7 @@ const DIRECTION_KEYS: Record<string, Direction> = {
  */
 export function ArrowPuzzle() {
   const [position, setPosition] = useState<[number, number]>(START);
+  const positionRef = useRef<[number, number]>(START);
   const [moves, setMoves] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const startedAt = useRef<number | null>(null);
@@ -93,9 +94,10 @@ export function ArrowPuzzle() {
   const move = useCallback(
     (direction: Direction) => {
       if (won || completed.current) return;
-      const next = slide(position, direction);
-      if (next[0] === position[0] && next[1] === position[1]) return;
+      const next = slide(positionRef.current, direction);
+      if (next[0] === positionRef.current[0] && next[1] === positionRef.current[1]) return;
       if (startedAt.current === null) startedAt.current = performance.now();
+      positionRef.current = next;
       setPosition(next);
       setMoves((count) => count + 1);
       if (next[0] === GOAL[0] && next[1] === GOAL[1]) {
@@ -103,7 +105,7 @@ export function ArrowPuzzle() {
         setElapsed(performance.now() - startedAt.current);
       }
     },
-    [position, won]
+    [won]
   );
 
   useEffect(() => {
@@ -137,6 +139,7 @@ export function ArrowPuzzle() {
 
   const restart = () => {
     setPosition(START);
+    positionRef.current = START;
     setMoves(0);
     setElapsed(0);
     startedAt.current = null;
