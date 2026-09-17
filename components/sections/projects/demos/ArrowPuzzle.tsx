@@ -43,10 +43,10 @@ function slide(
 }
 
 const DIRECTION_KEYS: Record<string, Direction> = {
-  ArrowUp: "up",
-  ArrowDown: "down",
-  ArrowLeft: "left",
-  ArrowRight: "right",
+  arrowup: "up",
+  arrowdown: "down",
+  arrowleft: "left",
+  arrowright: "right",
   w: "up",
   s: "down",
   a: "left",
@@ -76,7 +76,7 @@ export function ArrowPuzzle() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      const direction = DIRECTION_KEYS[event.key];
+      const direction = DIRECTION_KEYS[event.key.toLowerCase()];
       if (!direction) return;
       event.preventDefault();
       move(direction);

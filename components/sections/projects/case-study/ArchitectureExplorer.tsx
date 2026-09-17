@@ -2,10 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { supportsWebGL, ThreeErrorBoundary } from "@/components/three/webgl-utils";
+import { ProjectCanvas } from "../ProjectCanvas";
 import { ArchitectureNodeList } from "./ArchitectureNodeList";
 import type { ArchitectureNode } from "@/lib/data/types";
 
@@ -21,10 +19,7 @@ const ServerArtifactScene = dynamic(() => import("../ServerArtifact3D"), {
  * exclusively behind WebGL, a mouse, or motion.
  */
 export function ArchitectureExplorer({ nodes }: { nodes: ArchitectureNode[] }) {
-  const prefersReducedMotion = useReducedMotion();
   const [activeId, setActiveId] = useState<string | null>(nodes[0]?.id ?? null);
-  const canRender3D =
-    !prefersReducedMotion && typeof window !== "undefined" && supportsWebGL();
 
   if (nodes.length === 0) return null;
 
@@ -42,40 +37,28 @@ export function ArchitectureExplorer({ nodes }: { nodes: ArchitectureNode[] }) {
       </p>
 
       <div className="mt-4 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-        {canRender3D ? (
-          <ThreeErrorBoundary
-            fallback={
-              <div className="border-border-dim bg-black-glass/60 flex h-72 items-center justify-center border font-mono text-xs text-fg-dim">
-                3D renderer unavailable — use the component list.
-              </div>
-            }
-          >
-            <div className="border-border-dim h-72 w-full border sm:h-96">
-              <Canvas
-                dpr={[1, 1.5]}
-                camera={{ position: [0, 1.6, 6], fov: 45 }}
-                gl={{ antialias: true, alpha: true }}
-              >
-                <ServerArtifactScene
-                  nodes={nodes}
-                  activeId={activeId}
-                  onActivate={setActiveId}
-                />
-                <OrbitControls
-                  enablePan={false}
-                  minDistance={3}
-                  maxDistance={9}
-                />
-              </Canvas>
+        <ProjectCanvas
+          className="border-border-dim h-72 w-full border sm:h-96"
+          camera={{ position: [0, 1.6, 6], fov: 45 }}
+          fallback={
+            <div className="border-border-dim bg-black-glass/60 flex h-72 items-center justify-center border p-4 text-center font-mono text-xs text-fg-dim">
+              3D view unavailable in this browser. Use the component list.
             </div>
-          </ThreeErrorBoundary>
-        ) : (
-          <div className="border-border-dim bg-black-glass/60 flex h-72 items-center justify-center border p-4 text-center font-mono text-xs text-fg-dim">
-            {prefersReducedMotion
-              ? "3D view skipped (reduced motion enabled). Use the component list."
-              : "3D view unavailable in this browser. Use the component list."}
-          </div>
-        )}
+          }
+          reducedMotionFallback={
+            <div className="border-border-dim bg-black-glass/60 flex h-72 items-center justify-center border p-4 text-center font-mono text-xs text-fg-dim">
+              3D view skipped (reduced motion enabled). Use the component list.
+            </div>
+          }
+        >
+          <ServerArtifactScene
+            nodes={nodes}
+            activeId={activeId}
+            defaultId={nodes[0]?.id ?? null}
+            onActivate={setActiveId}
+          />
+          <OrbitControls enablePan={false} minDistance={3} maxDistance={9} />
+        </ProjectCanvas>
 
         <ArchitectureNodeList
           nodes={nodes}

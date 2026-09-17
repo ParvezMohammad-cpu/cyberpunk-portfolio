@@ -9,6 +9,7 @@ import type { ArchitectureNode } from "@/lib/data/types";
 interface ServerArtifactSceneProps {
   nodes: ArchitectureNode[];
   activeId: string | null;
+  defaultId: string | null;
   onActivate: (id: string) => void;
 }
 
@@ -46,7 +47,7 @@ function DataPacket({ delay }: { delay: number }) {
  * focusing a node's `<Html>` label highlights it — the labels are real
  * DOM buttons, so this works with mouse, keyboard, and touch alike.
  */
-function ServerArtifactScene({ nodes, activeId, onActivate }: ServerArtifactSceneProps) {
+function ServerArtifactScene({ nodes, activeId, defaultId, onActivate }: ServerArtifactSceneProps) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((_, delta) => {
@@ -77,6 +78,9 @@ function ServerArtifactScene({ nodes, activeId, onActivate }: ServerArtifactScen
             <group key={node.id} position={position}>
               <mesh
                 onPointerOver={() => onActivate(node.id)}
+                onPointerOut={() => {
+                  if (defaultId) onActivate(defaultId);
+                }}
                 scale={isActive ? 1.35 : 1}
               >
                 <boxGeometry args={[0.3, 0.3, 0.3]} />

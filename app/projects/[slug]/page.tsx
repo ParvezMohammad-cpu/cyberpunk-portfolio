@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LAB_STATUS_LABEL, PROJECTS, getProjectBySlug } from "@/lib/data/projects";
+import { LAB_STATUS_LABEL, PROJECT_TIER_LABEL, PROJECTS, getProjectBySlug } from "@/lib/data/projects";
 import {
   BackToProjects,
   CaseStudySections,
@@ -18,12 +18,6 @@ import { AimTrainer } from "@/components/sections/projects/demos/AimTrainer";
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
 }
-
-const TIER_LABEL: Record<string, string> = {
-  real: "REAL",
-  build: "BUILD",
-  experiment: "EXPERIMENT",
-};
 
 export function generateStaticParams() {
   return PROJECTS.map((project) => ({ slug: project.slug }));
@@ -76,7 +70,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <header className="mt-6">
           <div className="flex flex-wrap items-center gap-3 font-mono text-xs tracking-[0.2em] uppercase">
             <span className="text-fg-dim">{project.id}</span>
-            <span className="text-glow-cyan">{TIER_LABEL[project.tier]}</span>
+            <span className="text-glow-cyan">{PROJECT_TIER_LABEL[project.tier]}</span>
             {project.tier === "experiment" && project.labStatus && (
               <span className="border-neon-magenta/60 text-glow-magenta border px-2 py-0.5">
                 {LAB_STATUS_LABEL[project.labStatus]}

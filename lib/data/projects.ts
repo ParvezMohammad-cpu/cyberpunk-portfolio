@@ -1,4 +1,4 @@
-import type { Project } from "./types";
+import type { Project, ProjectTier } from "./types";
 
 /**
  * Step 4 "Proof Layer" project data. Every value that isn't independently
@@ -353,4 +353,11 @@ export const LAB_STATUS_LABEL: Record<NonNullable<Project["labStatus"]>, string>
   prototype: "PROTOTYPE",
   research: "RESEARCH",
   abandoned: "ABANDONED",
+};
+
+/** Display labels for the Step 4 REAL/BUILD/EXPERIMENT tiers. */
+export const PROJECT_TIER_LABEL: Record<ProjectTier, string> = {
+  real: "REAL",
+  build: "BUILD",
+  experiment: "EXPERIMENT",
 };

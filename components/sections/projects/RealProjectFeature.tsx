@@ -3,9 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { supportsWebGL, ThreeErrorBoundary } from "@/components/three/webgl-utils";
+import { ProjectCanvas } from "./ProjectCanvas";
 import { ArchitectureNodeList } from "./case-study/ArchitectureNodeList";
 import type { Project } from "@/lib/data/types";
 
@@ -44,39 +42,29 @@ interface RealProjectFeatureProps {
  * is reachable without WebGL, a mouse, or motion.
  */
 export function RealProjectFeature({ project }: RealProjectFeatureProps) {
-  const prefersReducedMotion = useReducedMotion();
   const [activeId, setActiveId] = useState<string | null>(
     project.architectureNodes?.[0]?.id ?? null
   );
-  const canRender3D =
-    !prefersReducedMotion && typeof window !== "undefined" && supportsWebGL();
 
   const nodes = project.architectureNodes ?? [];
 
   return (
     <div className="border-border-dim bg-surface/40 grid gap-8 border p-6 sm:p-8 lg:grid-cols-[1.1fr_1fr]">
       <div>
-        {canRender3D ? (
-          <ThreeErrorBoundary fallback={<StaticServerFallback />}>
-            <div className="h-64 w-full sm:h-80">
-              <Canvas
-                dpr={[1, 1.5]}
-                camera={{ position: [0, 1.4, 5], fov: 45 }}
-                gl={{ antialias: true, alpha: true }}
-              >
-                {nodes.length > 0 && (
-                  <ServerArtifactScene
-                    nodes={nodes}
-                    activeId={activeId}
-                    onActivate={setActiveId}
-                  />
-                )}
-              </Canvas>
-            </div>
-          </ThreeErrorBoundary>
-        ) : (
-          <StaticServerFallback />
-        )}
+        <ProjectCanvas
+          className="h-64 w-full sm:h-80"
+          camera={{ position: [0, 1.4, 5], fov: 45 }}
+          fallback={<StaticServerFallback />}
+        >
+          {nodes.length > 0 && (
+            <ServerArtifactScene
+              nodes={nodes}
+              activeId={activeId}
+              defaultId={nodes[0]?.id ?? null}
+              onActivate={setActiveId}
+            />
+          )}
+        </ProjectCanvas>
 
         {nodes.length > 0 && (
           <div className="mt-4">
