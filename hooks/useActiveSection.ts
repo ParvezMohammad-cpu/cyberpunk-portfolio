@@ -22,13 +22,27 @@ export function useActiveSection(): SectionId {
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          .sort((a, b) => {
+            const viewportCenter = window.innerHeight / 2;
+            const distanceToViewportCenter = (rect: DOMRectReadOnly) => {
+              if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
+                return 0;
+              }
+              return Math.min(
+                Math.abs(rect.top - viewportCenter),
+                Math.abs(rect.bottom - viewportCenter)
+              );
+            };
+            const aDistance = distanceToViewportCenter(a.boundingClientRect);
+            const bDistance = distanceToViewportCenter(b.boundingClientRect);
+            return aDistance - bDistance;
+          })[0];
 
         if (visible) {
           setActiveId(visible.target.id as SectionId);
         }
       },
-      { threshold: [0.25, 0.5, 0.75], rootMargin: "-10% 0px -10% 0px" }
+      { threshold: [0, 0.1, 0.25, 0.5], rootMargin: "-35% 0px -35% 0px" }
     );
 
     elements.forEach((el) => observer.observe(el));
