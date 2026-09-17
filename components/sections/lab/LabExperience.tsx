@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { AimTrainer } from "@/components/sections/projects/demos/AimTrainer";
 import { ArrowPuzzle } from "@/components/sections/projects/demos/ArrowPuzzle";
-import { projectile, systemMetrics } from "@/lib/lab-engines";
+import { projectile, systemMetrics, type SystemModel } from "@/lib/lab-engines";
 
 const button = "border border-border-dim px-3 py-2 font-mono text-xs uppercase tracking-widest text-fg-dim hover:border-neon-cyan hover:text-neon-cyan focus-visible:outline focus-visible:outline-2 focus-visible:outline-neon-cyan";
 
@@ -43,7 +43,7 @@ function Physics() {
 }
 
 function Distributed() {
-  const [traffic, setTraffic] = useState(100); const [model, setModel] = useState({ apis: 2, cache: false, replicas: 0, queue: false }); const metrics = systemMetrics(traffic, model);
+  const [traffic, setTraffic] = useState(100); const [model, setModel] = useState<SystemModel>({ apis: 2, cache: false, replicas: 0, queue: false }); const metrics = systemMetrics(traffic, model);
   const change = (next: Partial<typeof model>) => setModel({ ...model, ...next });
   return <Shell title="DISTRIBUTED SYSTEM"><p className="text-fg-dim">Synthetic qualitative model, not a production benchmark. CLIENTS → LOAD BALANCER → API → CACHE → DATABASE.</p><div className="mt-5 flex flex-wrap gap-2">{[10,100,1000,10000,100000,1000000].map((n) => <button className={button} key={n} onClick={() => setTraffic(n)}>{n >= 1000 ? `${n / 1000}K` : n} requests/sec</button>)}</div><div className="mt-5 flex flex-wrap gap-2"><button className={button} onClick={() => change({ cache: true })}>Add cache</button><button className={button} onClick={() => change({ replicas: model.replicas + 1 })}>Add replica</button><button className={button} onClick={() => change({ queue: true })}>Add queue</button><button className={button} onClick={() => change({ apis: model.apis + 1 })}>Scale horizontally</button><button className={button} onClick={() => setModel({ apis: 2, cache: false, replicas: 0, queue: false })}>Reset</button></div><p role="status" className="mt-6 border border-border-dim p-5">{metrics.overloaded ? "OVERLOAD" : "WITHIN CAPACITY"} / capacity {metrics.capacity} rps / queue {metrics.queue} rps / latency {metrics.latency} ms / errors {metrics.errors} rps</p><p className="mt-4 text-xs text-fg-dim">Cache reduces database demand; replicas increase read capacity only in this simplified model; queues defer excess work and add latency; APIs cannot remove database bottlenecks.</p></Shell>;
 }

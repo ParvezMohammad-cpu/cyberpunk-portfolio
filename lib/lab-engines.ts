@@ -32,5 +32,8 @@ export function systemMetrics(requestsPerSecond: number, model: SystemModel): Sy
   const excess = Math.max(0, effectiveDemand - capacity);
   const queued = model.queue ? Math.round(excess * QUEUED_EXCESS_RATIO) : 0;
   const errors = model.queue ? Math.round(excess * QUEUED_ERROR_RATIO) : excess;
-  return { capacity, queue: queued, latency: BASE_LATENCY_MS + Math.round((effectiveDemand / Math.max(capacity, 1)) * UTILIZATION_LATENCY_MS) + (model.queue ? QUEUE_LATENCY_MS : 0), errors, overloaded: excess > 0 };
+  const latency = BASE_LATENCY_MS
+    + Math.round((effectiveDemand / Math.max(capacity, 1)) * UTILIZATION_LATENCY_MS)
+    + (model.queue ? QUEUE_LATENCY_MS : 0);
+  return { capacity, queue: queued, latency, errors, overloaded: excess > 0 };
 }

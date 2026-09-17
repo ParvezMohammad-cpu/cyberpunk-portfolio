@@ -7,7 +7,6 @@ type Direction = "up" | "down" | "left" | "right";
 const GRID_SIZE = 6;
 const START: [number, number] = [0, 0];
 const GOAL: [number, number] = [5, 5];
-const OPTIMAL_MOVES = 2;
 // 1 = wall. A small fixed level designed so the goal is reachable but not
 // trivially adjacent — the point is a real slide-until-blocked puzzle, not
 // a placeholder CTA.
@@ -42,6 +41,27 @@ function slide(
 
   return [cx, cy];
 }
+
+function minimumMoves() {
+  const directions: Direction[] = ["up", "down", "left", "right"];
+  const queue: Array<{ position: [number, number]; moves: number }> = [{ position: START, moves: 0 }];
+  const seen = new Set([key(...START)]);
+  while (queue.length) {
+    const current = queue.shift()!;
+    if (current.position[0] === GOAL[0] && current.position[1] === GOAL[1]) return current.moves;
+    directions.forEach((direction) => {
+      const next = slide(current.position, direction);
+      const nextKey = key(...next);
+      if (nextKey !== key(...current.position) && !seen.has(nextKey)) {
+        seen.add(nextKey);
+        queue.push({ position: next, moves: current.moves + 1 });
+      }
+    });
+  }
+  return 0;
+}
+
+const OPTIMAL_MOVES = minimumMoves();
 
 const DIRECTION_KEYS: Record<string, Direction> = {
   arrowup: "up",
@@ -109,7 +129,6 @@ export function ArrowPuzzle() {
       } else if (!document.hidden && pausedAt.current !== null && startedAt.current !== null) {
         startedAt.current += performance.now() - pausedAt.current;
         pausedAt.current = null;
-        completed.current = false;
       }
     };
     document.addEventListener("visibilitychange", visibility);
@@ -216,7 +235,7 @@ export function ArrowPuzzle() {
       <p role="status" className="mt-3 text-center font-mono text-sm">
         {won ? (
           <span className="text-glow-cyan uppercase tracking-[0.2em]">
-            Level complete / moves {moves} / time {(elapsed / 1000).toFixed(1)}s / efficiency {Math.min(100, Math.round((OPTIMAL_MOVES / Math.max(moves, 1)) * 100))}% — experiment successful.
+            Level complete / moves {moves} / time {(elapsed / 1000).toFixed(1)}s / efficiency {Math.min(100, Math.round((OPTIMAL_MOVES / Math.max(moves, 1)) * 100))}% (shortest-path move score) — experiment successful.
           </span>
         ) : (
           <span className="text-fg-dim">
