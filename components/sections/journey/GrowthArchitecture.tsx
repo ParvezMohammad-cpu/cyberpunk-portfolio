@@ -27,17 +27,13 @@ export function GrowthArchitecture() {
         </div>
         <div
           className="flex flex-wrap gap-2"
-          role="tablist"
           aria-label="Growth architecture stages"
         >
           {GROWTH_STAGES.map((stage) => (
             <button
               key={stage.id}
-              id={`growth-tab-${stage.id}`}
               type="button"
-              role="tab"
-              aria-selected={stage.id === activeStage.id}
-              aria-controls={`growth-panel-${stage.id}`}
+              aria-pressed={stage.id === activeStage.id}
               onClick={() => setActiveStageId(stage.id)}
               className={`border px-3 py-2 font-mono text-xs tracking-[0.2em] uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-neon-cyan ${
                 stage.id === activeStage.id
@@ -52,9 +48,6 @@ export function GrowthArchitecture() {
       </div>
 
       <div
-        id={`growth-panel-${activeStage.id}`}
-        role="tabpanel"
-        aria-labelledby={`growth-tab-${activeStage.id}`}
         className="mt-6"
       >
         <p className="max-w-3xl text-sm leading-relaxed text-fg-dim">

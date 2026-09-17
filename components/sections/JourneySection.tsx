@@ -98,6 +98,11 @@ export function JourneySection() {
         </div>
 
         <div className="relative mt-14">
+          {/*
+            Hand-tuned decorative path for the current four-node vertical
+            narrative. The ordered list below remains the source of truth and
+            readable fallback if future content needs different path geometry.
+          */}
           <svg
             aria-hidden
             viewBox="0 0 100 420"

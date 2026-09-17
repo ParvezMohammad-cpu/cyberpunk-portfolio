@@ -35,6 +35,12 @@ export function useActiveSection(): SectionId {
             };
             const aDistance = distanceToViewportCenter(a.boundingClientRect);
             const bDistance = distanceToViewportCenter(b.boundingClientRect);
+            if (aDistance === bDistance) {
+              return (
+                Math.abs(a.boundingClientRect.top) -
+                Math.abs(b.boundingClientRect.top)
+              );
+            }
             return aDistance - bDistance;
           })[0];
 
