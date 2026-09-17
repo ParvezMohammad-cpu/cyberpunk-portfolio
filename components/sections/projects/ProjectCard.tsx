@@ -1,19 +1,6 @@
 import Link from "next/link";
 import type { Project } from "@/lib/data/types";
-
-const STATUS_LABEL: Record<Project["status"], string> = {
-  live: "ONLINE",
-  archived: "ARCHIVED",
-  experimental: "EXPERIMENTAL",
-  "in-progress": "IN PROGRESS",
-};
-
-const LAB_STATUS_LABEL: Record<NonNullable<Project["labStatus"]>, string> = {
-  live: "LIVE",
-  prototype: "PROTOTYPE",
-  research: "RESEARCH",
-  abandoned: "ABANDONED",
-};
+import { LAB_STATUS_LABEL, PROJECT_STATUS_LABEL } from "@/lib/data/projects";
 
 interface ProjectCardProps {
   project: Project;
@@ -31,7 +18,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const statusLabel =
     project.tier === "experiment" && project.labStatus
       ? LAB_STATUS_LABEL[project.labStatus]
-      : STATUS_LABEL[project.status];
+      : PROJECT_STATUS_LABEL[project.status];
 
   return (
     <Link
@@ -40,7 +27,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
     >
       <span
         aria-hidden
-        className="project-artifact-scanline pointer-events-none absolute inset-x-0 top-0 h-px bg-neon-cyan/70 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+        className="project-artifact-scanline pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
       />
 
       <div className="flex items-center justify-between font-mono text-[0.65rem] tracking-[0.2em]">

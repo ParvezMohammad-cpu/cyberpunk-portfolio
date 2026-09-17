@@ -338,3 +338,19 @@ export const PROJECT_TIERS = ["real", "build", "experiment"] as const;
 export function getProjectBySlug(slug: string): Project | undefined {
   return PROJECTS.find((project) => project.slug === slug);
 }
+
+/** Display labels for the base project status (used outside the EXPERIMENT tier). */
+export const PROJECT_STATUS_LABEL: Record<Project["status"], string> = {
+  live: "ONLINE",
+  archived: "ARCHIVED",
+  experimental: "EXPERIMENTAL",
+  "in-progress": "IN PROGRESS",
+};
+
+/** Display labels for LAB EXPERIMENTS status — text labels, not color alone. */
+export const LAB_STATUS_LABEL: Record<NonNullable<Project["labStatus"]>, string> = {
+  live: "LIVE",
+  prototype: "PROTOTYPE",
+  research: "RESEARCH",
+  abandoned: "ABANDONED",
+};

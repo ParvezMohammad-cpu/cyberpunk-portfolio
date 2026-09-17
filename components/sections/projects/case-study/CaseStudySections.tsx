@@ -95,7 +95,7 @@ export function SourceSection({ project }: { project: Project }) {
           rel="noopener noreferrer"
           className="border-neon-cyan/60 text-glow-cyan hover:border-neon-cyan focus-visible:outline-neon-cyan mt-3 inline-flex w-fit border px-4 py-2 font-mono text-xs tracking-[0.2em] uppercase focus-visible:outline focus-visible:outline-2"
         >
-          Github →
+          GitHub →
         </a>
       ) : (
         <p className="text-fg-dim mt-3 font-mono text-xs tracking-[0.15em] uppercase">

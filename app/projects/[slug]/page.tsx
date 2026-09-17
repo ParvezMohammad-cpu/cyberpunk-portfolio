@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PROJECTS, getProjectBySlug } from "@/lib/data/projects";
+import { LAB_STATUS_LABEL, PROJECTS, getProjectBySlug } from "@/lib/data/projects";
 import {
   BackToProjects,
   CaseStudySections,
@@ -18,13 +18,6 @@ import { AimTrainer } from "@/components/sections/projects/demos/AimTrainer";
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
 }
-
-const LAB_STATUS_LABEL: Record<string, string> = {
-  live: "LIVE",
-  prototype: "PROTOTYPE",
-  research: "RESEARCH",
-  abandoned: "ABANDONED",
-};
 
 const TIER_LABEL: Record<string, string> = {
   real: "REAL",

@@ -251,7 +251,22 @@ body {
   }
 }
 
-/* Project artifact card "scanning" line (Step 4 / 4.10), shown on hover/focus. */
+/* Project artifact card "scanning" line (Step 4 / 4.10), shown on hover/focus.
+   Animates background-position (paint only) instead of `top` (layout) or a
+   percentage `transform: translateY()` (which would be relative to this
+   element's own near-zero height, not the card). */
+.project-artifact-scanline {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--color-neon-cyan) 70%, transparent) 49%,
+    color-mix(in srgb, var(--color-neon-cyan) 70%, transparent) 51%,
+    transparent 100%
+  );
+  background-size: 100% 300%;
+  background-repeat: no-repeat;
+}
+
 .project-artifact-card:hover .project-artifact-scanline,
 .project-artifact-card:focus-visible .project-artifact-scanline {
   animation: project-artifact-scan 1.4s ease-in-out infinite;
@@ -259,13 +274,13 @@ body {
 
 @keyframes project-artifact-scan {
   0% {
-    top: 0;
+    background-position-y: -100%;
   }
   50% {
-    top: 100%;
+    background-position-y: 100%;
   }
   100% {
-    top: 0;
+    background-position-y: -100%;
   }
 }
 

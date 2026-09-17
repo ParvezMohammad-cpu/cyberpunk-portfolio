@@ -97,7 +97,7 @@ export function RealProjectFeature({ project }: RealProjectFeatureProps) {
           {project.title}
         </h4>
 
-        {project.metrics && (
+        {project.metrics && project.metrics.length > 0 && (
           <dl className="grid grid-cols-2 gap-4 font-mono text-sm">
             {project.metrics.map((metric) => (
               <div key={metric.label}>
