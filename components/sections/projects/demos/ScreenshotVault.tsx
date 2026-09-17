@@ -22,14 +22,6 @@ interface VaultTab {
   items: VaultItem[];
 }
 
-let itemCounter = 0;
-let tabCounter = 0;
-
-function createTab(name: string): VaultTab {
-  tabCounter += 1;
-  return { id: `tab-${tabCounter}`, name, items: [] };
-}
-
 function placeholderDataUrl(label: string): string {
   const hue = Math.floor(Math.random() * 360);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64"><rect width="100%" height="100%" fill="hsl(${hue},70%,20%)"/><text x="50%" y="50%" fill="hsl(${hue},80%,75%)" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle">${label}</text></svg>`;
@@ -50,7 +42,20 @@ function formatBytes(bytes: number): string {
  * object URLs released on eviction, tab close, and unmount.
  */
 export function ScreenshotVault() {
-  const [tabs, setTabs] = useState<VaultTab[]>(() => [createTab("TAB 1")]);
+  // Instance-scoped counters (not module-scope) so multiple mounted vaults
+  // never collide on generated ids. Start at 1 since the initial tab below
+  // is seeded directly (without reading the ref during render).
+  const tabCounterRef = useRef(1);
+  const itemCounterRef = useRef(0);
+
+  const createTab = useCallback((name: string): VaultTab => {
+    tabCounterRef.current += 1;
+    return { id: `tab-${tabCounterRef.current}`, name, items: [] };
+  }, []);
+
+  const [tabs, setTabs] = useState<VaultTab[]>(() => [
+    { id: "tab-1", name: "TAB 1", items: [] },
+  ]);
   const [activeTabId, setActiveTabId] = useState<string>(() => tabs[0].id);
   const [log, setLog] = useState<string[]>([]);
   const fileInputId = useId();
@@ -105,10 +110,10 @@ export function ScreenshotVault() {
             });
           }
 
-          itemCounter += 1;
+          itemCounterRef.current += 1;
           const newItem: VaultItem = {
             ...item,
-            id: `item-${itemCounter}`,
+            id: `item-${itemCounterRef.current}`,
             createdAt: Date.now(),
           };
           appendLog(`Added "${newItem.label}" to ${tab.name}`);
@@ -121,8 +126,8 @@ export function ScreenshotVault() {
   );
 
   const addGeneratedScreenshot = () => {
-    itemCounter += 1;
-    const label = `IMG_${String(itemCounter).padStart(3, "0")}`;
+    itemCounterRef.current += 1;
+    const label = `IMG_${String(itemCounterRef.current).padStart(3, "0")}`;
     const simulatedSize = Math.round(500_000 + Math.random() * 3_000_000);
     addItemToTab(activeTabId, {
       label,

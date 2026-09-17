@@ -107,7 +107,7 @@ export function SourceSection({ project }: { project: Project }) {
 }
 
 export function BackToProjects({ tier }: { tier?: string }) {
-  const href = tier ? `/#projects?tier=${tier}` : "/#projects";
+  const href = tier ? `/?tier=${tier}#projects` : "/#projects";
   return (
     <Link
       href={href}

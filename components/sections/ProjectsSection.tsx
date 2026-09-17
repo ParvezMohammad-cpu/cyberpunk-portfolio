@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { SECTIONS } from "@/lib/sections";
 import { PROJECTS, PROJECT_TIERS } from "@/lib/data/projects";
@@ -12,6 +12,10 @@ import { RealProjectFeature } from "./projects/RealProjectFeature";
 
 const TIER_ORDER: ProjectTier[] = [...PROJECT_TIERS];
 
+function isProjectTier(value: string | null): value is ProjectTier {
+  return !!value && (PROJECT_TIERS as readonly string[]).includes(value);
+}
+
 /**
  * 03 — Projects, the Step 4 "Proof Layer". Structured project data drives
  * REAL / BUILD / EXPERIMENT tier filtering, artifact-style cards linking to
@@ -22,6 +26,19 @@ const TIER_ORDER: ProjectTier[] = [...PROJECT_TIERS];
 export function ProjectsSection() {
   const ref = useScrollReveal<HTMLElement>();
   const [tier, setTier] = useState<ProjectTier | "all">("all");
+
+  // Restore the tier that was active when navigating away to a case study,
+  // so "back to project database" returns to the same filtered view. This
+  // reads a browser-only query param, so it must run post-mount rather than
+  // during the initial (possibly server) render — the same pattern used in
+  // useBootSequenceVisibility.ts.
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("tier");
+    if (isProjectTier(requested)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTier(requested);
+    }
+  }, []);
 
   const filtered = useMemo(
     () => PROJECTS.filter((project) => tier === "all" || project.tier === tier),
@@ -51,7 +68,7 @@ export function ProjectsSection() {
 
       <div data-reveal className="mt-6">
         <ProjectFilterBar
-          label="Category"
+          label="Tier"
           options={TIER_ORDER}
           active={tier}
           onChange={setTier}
