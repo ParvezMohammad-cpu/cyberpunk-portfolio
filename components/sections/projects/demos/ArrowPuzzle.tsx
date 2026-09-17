@@ -72,21 +72,18 @@ export function ArrowPuzzle() {
 
   const move = useCallback(
     (direction: Direction) => {
-      if (won) return;
-      setPosition((current) => {
-        const next = slide(current, direction);
-        if (next[0] !== current[0] || next[1] !== current[1]) {
-          if (startedAt.current === null) startedAt.current = performance.now();
-          setMoves((count) => count + 1);
-          if (next[0] === GOAL[0] && next[1] === GOAL[1] && !completed.current) {
-            completed.current = true;
-            setElapsed(performance.now() - startedAt.current);
-          }
-        }
-        return next;
-      });
+      if (won || completed.current) return;
+      const next = slide(position, direction);
+      if (next[0] === position[0] && next[1] === position[1]) return;
+      if (startedAt.current === null) startedAt.current = performance.now();
+      setPosition(next);
+      setMoves((count) => count + 1);
+      if (next[0] === GOAL[0] && next[1] === GOAL[1]) {
+        completed.current = true;
+        setElapsed(performance.now() - startedAt.current);
+      }
     },
-    [won]
+    [position, won]
   );
 
   useEffect(() => {
