@@ -1,9 +1,5 @@
+import Link from "next/link";
 import type { Project } from "@/lib/data/types";
-
-interface ProjectCardProps {
-  project: Project;
-  onInspect: (project: Project) => void;
-}
 
 const STATUS_LABEL: Record<Project["status"], string> = {
   live: "ONLINE",
@@ -12,20 +8,44 @@ const STATUS_LABEL: Record<Project["status"], string> = {
   "in-progress": "IN PROGRESS",
 };
 
+const LAB_STATUS_LABEL: Record<NonNullable<Project["labStatus"]>, string> = {
+  live: "LIVE",
+  prototype: "PROTOTYPE",
+  research: "RESEARCH",
+  abandoned: "ABANDONED",
+};
+
+interface ProjectCardProps {
+  project: Project;
+}
+
 /**
- * A single project card. "VIEW PROJECT" opens the accessible detail
- * overlay (`onInspect`); live/source links (when present) are separate,
- * directly-focusable anchors rather than being buried inside a hover-only
- * preview.
+ * "Object" style project artifact (Step 4 / 4.10-4.11). Essential
+ * information — id, title, status, short context, technologies — is always
+ * visible; hover/focus only adds a scanning-line flourish and an extra
+ * metrics row, it never hides required content. The whole card is a real
+ * link to the full-page case study, so it's directly reachable by keyboard,
+ * touch, or screen reader, not just on hover.
  */
-export function ProjectCard({ project, onInspect }: ProjectCardProps) {
+export function ProjectCard({ project }: ProjectCardProps) {
+  const statusLabel =
+    project.tier === "experiment" && project.labStatus
+      ? LAB_STATUS_LABEL[project.labStatus]
+      : STATUS_LABEL[project.status];
+
   return (
-    <article className="border-border-dim bg-surface/60 hover:border-neon-cyan/50 focus-within:border-neon-cyan/50 flex flex-col gap-3 border p-5 text-left transition-colors">
+    <Link
+      href={`/projects/${project.slug}`}
+      className="project-artifact-card border-border-dim bg-surface/60 hover:border-neon-cyan/50 focus-visible:border-neon-cyan/50 focus-visible:outline-neon-cyan group relative flex flex-col gap-3 border p-5 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+    >
+      <span
+        aria-hidden
+        className="project-artifact-scanline pointer-events-none absolute inset-x-0 top-0 h-px bg-neon-cyan/70 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+      />
+
       <div className="flex items-center justify-between font-mono text-[0.65rem] tracking-[0.2em]">
         <span className="text-fg-dim uppercase">{project.id}</span>
-        <span className="text-glow-cyan uppercase">
-          {STATUS_LABEL[project.status]}
-        </span>
+        <span className="text-glow-cyan uppercase">{statusLabel}</span>
       </div>
 
       {project.isPlaceholder && (
@@ -41,24 +61,21 @@ export function ProjectCard({ project, onInspect }: ProjectCardProps) {
         {project.description}
       </p>
 
-      <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-xs">
-        <dt className="text-fg-dim uppercase">Type</dt>
-        <dd className="text-fg uppercase">{project.category}</dd>
-        {project.role && (
-          <>
-            <dt className="text-fg-dim uppercase">Role</dt>
-            <dd className="text-fg">{project.role}</dd>
-          </>
-        )}
-        {project.year && (
-          <>
-            <dt className="text-fg-dim uppercase">Year</dt>
-            <dd className="text-fg">{project.year}</dd>
-          </>
-        )}
-      </dl>
+      {project.metrics && project.metrics.length > 0 && (
+        <dl className="grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-xs">
+          {project.metrics.slice(0, 2).map((metric) => (
+            <div key={metric.label} className="flex flex-col">
+              <dt className="text-fg-dim uppercase">{metric.label}</dt>
+              <dd className="text-glow-cyan font-bold">{metric.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
 
-      <ul className="flex flex-wrap gap-1.5" aria-label={`${project.title} technologies`}>
+      <ul
+        className="flex flex-wrap gap-1.5"
+        aria-label={`${project.title} technologies`}
+      >
         {project.technologies.map((tech) => (
           <li
             key={tech}
@@ -69,38 +86,9 @@ export function ProjectCard({ project, onInspect }: ProjectCardProps) {
         ))}
       </ul>
 
-      <div className="mt-2 flex flex-wrap items-center gap-3">
-        <button
-          onClick={() => onInspect(project)}
-          className="border-neon-cyan/60 text-glow-cyan focus-visible:outline-neon-cyan hover:border-neon-cyan border px-4 py-2 font-mono text-xs tracking-[0.2em] uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-        >
-          Inspect System
-        </button>
-        {project.liveUrl && (
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-fg-dim hover:text-fg focus-visible:outline-neon-cyan font-mono text-xs tracking-[0.2em] uppercase underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2"
-          >
-            Live Demo
-          </a>
-        )}
-        {project.sourceUrl ? (
-          <a
-            href={project.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-fg-dim hover:text-fg focus-visible:outline-neon-cyan font-mono text-xs tracking-[0.2em] uppercase underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2"
-          >
-            Source Code
-          </a>
-        ) : (
-          <span className="text-fg-dim/60 font-mono text-xs tracking-[0.2em] uppercase">
-            Source unavailable
-          </span>
-        )}
-      </div>
-    </article>
+      <span className="border-neon-cyan/60 text-glow-cyan mt-2 w-fit border px-4 py-2 font-mono text-xs tracking-[0.2em] uppercase transition-colors group-hover:border-neon-cyan">
+        Inspect →
+      </span>
+    </Link>
   );
 }

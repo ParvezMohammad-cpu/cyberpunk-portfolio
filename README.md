@@ -72,11 +72,81 @@ section — it's a small persistent link in the HUD instead.
 See [`THEME.md`](./THEME.md) for the full visual language (colors,
 typography, effects) that later phases should reuse.
 
+## Step 4 — Projects "Proof Layer"
+
+The Projects section (`components/sections/ProjectsSection.tsx`) implements
+the Step 4 brief: projects as artifacts, not a generic card grid.
+
+- **REAL / BUILD / EXPERIMENT tiers** — `lib/data/projects.ts` tags every
+  project with a `tier`; the filter bar in Projects switches between them
+  with real, keyboard-operable buttons (no forced animation gate — normal
+  scrolling and direct `/projects/[slug]` links work independently).
+- **Featured REAL artifact** — the first `tier: "real"` project renders a
+  lazy-loaded R3F "floating server" (`ServerArtifact3D.tsx`) with orbiting,
+  pointer/keyboard/touch-highlightable component nodes, plus a static DOM
+  fallback for reduced motion / no-WebGL / render-error paths.
+- **Full-page case studies, not modals** — `app/projects/[slug]/page.tsx`
+  replaces the old detail modal with real App Router routes: static params
+  for every project, `generateMetadata`, `notFound()` + a custom
+  `not-found.tsx`, deep links, reload support, and a visible back-to-database
+  link.
+- **Architecture explorer** — `ArchitectureExplorer.tsx` renders the
+  USERS → AZURE FRONT DOOR → WAF → APPLICATION → SQL/BLOB/LOGS diagram in 3D
+  (rotate via `OrbitControls`, click a node) *and* as an equivalent DOM node
+  list with Purpose/Why/Result — the same content is available without
+  WebGL, a mouse, or motion. Front Door and the WAF are described as
+  distinct layers; neither is claimed to guarantee availability on its own.
+- **Cinematic results + deployment simulation** — `CinematicMetrics.tsx`
+  reveals metrics one at a time (all-at-once under reduced motion);
+  `DeploymentSimulation.tsx` steps CODE → BUILD → TEST → DEV/QA/UAT → PROD
+  with start/replay/reset and is explicitly labeled a simulation, not a live
+  deployment or a measurement of this session.
+- **BUILD demos** — `components/sections/projects/demos/`:
+  - `ScreenshotVault.tsx` — a per-tab memory vault enforcing MAX OBJECTS 30 /
+    MAX SIZE 10MB / MAX TABS 5, with deterministic oldest-first eviction, a
+    visible eviction log, generated placeholder "screenshots" or optional
+    local image uploads (type/size validated, object URLs released on
+    evict/close/unmount), and a reset control.
+  - `ArrowPuzzle.tsx` — a small, genuinely playable slide-until-blocked
+    puzzle prototype (keyboard + on-screen buttons), explicitly framed as a
+    web prototype of the mechanic, not a claim of Android feature parity.
+  - `AimTrainer.tsx` — click/tap targets in a bounded area; reaction time,
+    accuracy, and hit count are computed live from that session's input
+    events (never hardcoded), plus a keyboard-only reaction-practice mode
+    labeled as a distinct, non-comparable alternative.
+- **EXPERIMENT tier** — rendered with a "LAB EXPERIMENTS — NOT EVERYTHING
+  HERE IS FINISHED. THAT'S THE POINT." banner and text-labeled LIVE /
+  PROTOTYPE / RESEARCH / ABANDONED status (not color alone).
+- **Case-study schema** — every serious project renders the same 01–08
+  schema (Problem, Constraints, Approach, Architecture, Implementation,
+  Challenges, Results, What I Learned) driven from `project.caseStudy`
+  instead of hardcoded per-project layouts.
+- **Source & decisions** — `SourceSection`/`TechDecisions` render a real
+  GitHub link when `sourceUrl` is set, otherwise an honest "not published"
+  note (no fake `href`s), plus expandable `<details>` "WHY X?" trade-off
+  explanations.
+- **Project DNA** — `ProjectDnaChart.tsx` is a pure-SVG radar (no client JS
+  required) with an equivalent `<table>`, explicitly labeled as qualitative
+  0–100 design-emphasis scores, not benchmark numbers; axis sets differ by
+  project kind (enterprise vs. game vs. research) and are documented as not
+  cross-comparable.
+
+**Content requiring verification before publishing:** the enterprise
+project's metrics (30K+ daily users, 99.99% availability, 70% deployment
+time reduction, 50% fewer manual updates), its problem/approach/outcome
+prose, and its `sourceUrl` are illustrative placeholders — see the
+`isPlaceholder` flags and metric `detail` text in `lib/data/projects.ts`.
+
+**Known limitations:** there's no existing automated test runner in this
+repo (no Jest/Vitest config), so the demos above were verified by manual
+`npm run build` + `npm run start` exercises rather than an automated test
+suite — see the PR description for exactly what was checked.
+
 ## Roadmap
 
 - **Phase 1 — Experience Design**: boot sequence, HUD nav, visual language,
   GSAP/Lenis/R3F foundations, six scaffolded sections.
-- **Phase 2 — Core Portfolio** *(this PR)*: real content + interaction for
+- **Phase 2 — Core Portfolio**: real content + interaction for
   Engineering (capability matrix, accessible architecture layer map),
   Projects (filters, cards, accessible detail overlay), Lab (module cards
   with launch/inspect states), Journey (about, expandable experience
@@ -84,6 +154,9 @@ typography, effects) that later phases should reuse.
   mobile nav menu and skip-to-content link.
 - **Phase 3 — Depth**: richer 3D/ambient backgrounds, real Lab module
   builds (Architecture Simulator, System Design Playground, terminal).
+- **Step 4 — Projects "Proof Layer"** *(this PR)*: REAL/BUILD/EXPERIMENT
+  artifacts, full-page case studies, interactive architecture/deployment,
+  playable BUILD demos, Project DNA — see above.
 - **Phase 4 — Polish**: micro-interactions, performance tuning, SEO/OG
   metadata, analytics.
 - **Phase 5 — Accessibility & reduced motion**: full `prefers-reduced-motion`

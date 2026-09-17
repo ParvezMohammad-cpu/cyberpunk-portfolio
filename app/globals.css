@@ -251,6 +251,31 @@ body {
   }
 }
 
+/* Project artifact card "scanning" line (Step 4 / 4.10), shown on hover/focus. */
+.project-artifact-card:hover .project-artifact-scanline,
+.project-artifact-card:focus-visible .project-artifact-scanline {
+  animation: project-artifact-scan 1.4s ease-in-out infinite;
+}
+
+@keyframes project-artifact-scan {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 100%;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-artifact-card:hover .project-artifact-scanline,
+  .project-artifact-card:focus-visible .project-artifact-scanline {
+    animation: none;
+  }
+}
+
 /* Blinking terminal cursor, used by boot sequence typewriter text */
 .terminal-cursor::after {
   content: "\2588";

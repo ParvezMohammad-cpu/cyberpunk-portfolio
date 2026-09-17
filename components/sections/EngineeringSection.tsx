@@ -37,6 +37,15 @@ export function EngineeringSection() {
       </p>
 
       <EngineeringWorld />
+
+      <div data-reveal className="mt-16 flex flex-col items-center gap-1">
+        <p className="font-mono text-fg text-sm tracking-[0.25em] uppercase">
+          Engineering Module Complete
+        </p>
+        <p className="text-glow-cyan font-mono text-xs tracking-[0.25em] uppercase">
+          &gt; Loading builds...
+        </p>
+      </div>
     </SectionShell>
   );
 }
