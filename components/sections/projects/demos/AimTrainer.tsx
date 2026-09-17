@@ -74,7 +74,7 @@ export function AimTrainer() {
     setKeyboardArmed(false);
   };
 
-  const handleTargetHit = (event: React.MouseEvent | React.TouchEvent) => {
+  const handleTargetHit = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!target || phase !== "running") return;
 
@@ -210,7 +210,6 @@ export function AimTrainer() {
               type="button"
               aria-label="Target"
               onClick={handleTargetHit}
-              onTouchStart={handleTargetHit}
               style={{ left: `${target.x}%`, top: `${target.y}%` }}
               className="border-neon-magenta bg-neon-magenta/30 absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan"
             />

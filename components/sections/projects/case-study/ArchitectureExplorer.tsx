@@ -32,8 +32,8 @@ export function ArchitectureExplorer({ nodes }: { nodes: ArchitectureNode[] }) {
         Architecture
       </h4>
       <p className="text-fg-dim mt-1 font-mono text-xs leading-relaxed">
-        USERS → AZURE FRONT DOOR → WAF → APPLICATION → SQL / BLOB / LOGS.
-        Drag to rotate, scroll to zoom, or use the component list below.
+        {nodes.map((node) => node.label).join(" → ")}. Drag to rotate, scroll
+        to zoom, or use the component list below.
       </p>
 
       <div className="mt-4 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
