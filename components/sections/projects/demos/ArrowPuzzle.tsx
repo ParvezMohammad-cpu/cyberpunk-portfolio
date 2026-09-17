@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Direction = "up" | "down" | "left" | "right";
 
@@ -42,6 +42,27 @@ function slide(
   return [cx, cy];
 }
 
+function minimumMoves() {
+  const directions: Direction[] = ["up", "down", "left", "right"];
+  const queue: Array<{ position: [number, number]; moves: number }> = [{ position: START, moves: 0 }];
+  const seen = new Set([key(...START)]);
+  while (queue.length) {
+    const current = queue.shift()!;
+    if (current.position[0] === GOAL[0] && current.position[1] === GOAL[1]) return current.moves;
+    directions.forEach((direction) => {
+      const next = slide(current.position, direction);
+      const nextKey = key(...next);
+      if (nextKey !== key(...current.position) && !seen.has(nextKey)) {
+        seen.add(nextKey);
+        queue.push({ position: next, moves: current.moves + 1 });
+      }
+    });
+  }
+  return 0;
+}
+
+const OPTIMAL_MOVES = minimumMoves();
+
 const DIRECTION_KEYS: Record<string, Direction> = {
   arrowup: "up",
   arrowdown: "down",
@@ -62,14 +83,27 @@ const DIRECTION_KEYS: Record<string, Direction> = {
  */
 export function ArrowPuzzle() {
   const [position, setPosition] = useState<[number, number]>(START);
+  const positionRef = useRef<[number, number]>(START);
   const [moves, setMoves] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
+  const startedAt = useRef<number | null>(null);
+  const pausedAt = useRef<number | null>(null);
+  const completed = useRef(false);
   const won = position[0] === GOAL[0] && position[1] === GOAL[1];
 
   const move = useCallback(
     (direction: Direction) => {
-      if (won) return;
-      setPosition((current) => slide(current, direction));
+      if (won || completed.current) return;
+      const next = slide(positionRef.current, direction);
+      if (next[0] === positionRef.current[0] && next[1] === positionRef.current[1]) return;
+      if (startedAt.current === null) startedAt.current = performance.now();
+      positionRef.current = next;
+      setPosition(next);
       setMoves((count) => count + 1);
+      if (next[0] === GOAL[0] && next[1] === GOAL[1]) {
+        completed.current = true;
+        setElapsed(performance.now() - startedAt.current);
+      }
     },
     [won]
   );
@@ -85,9 +119,31 @@ export function ArrowPuzzle() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [move]);
 
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (startedAt.current !== null && !won && pausedAt.current === null) {
+        setElapsed(performance.now() - startedAt.current);
+      }
+    }, 100);
+    const visibility = () => {
+      if (document.hidden && startedAt.current !== null && pausedAt.current === null) {
+        pausedAt.current = performance.now();
+      } else if (!document.hidden && pausedAt.current !== null && startedAt.current !== null) {
+        startedAt.current += performance.now() - pausedAt.current;
+        pausedAt.current = null;
+      }
+    };
+    document.addEventListener("visibilitychange", visibility);
+    return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange", visibility); };
+  }, [won]);
+
   const restart = () => {
     setPosition(START);
+    positionRef.current = START;
     setMoves(0);
+    setElapsed(0);
+    startedAt.current = null;
+    pausedAt.current = null;
   };
 
   return (
@@ -182,7 +238,7 @@ export function ArrowPuzzle() {
       <p role="status" className="mt-3 text-center font-mono text-sm">
         {won ? (
           <span className="text-glow-cyan uppercase tracking-[0.2em]">
-            Solved in {moves} moves — press Restart to play again.
+            Level complete / moves {moves} / time {(elapsed / 1000).toFixed(1)}s / efficiency {Math.min(100, Math.round((OPTIMAL_MOVES / Math.max(moves, 1)) * 100))}% (shortest-path move score) — experiment successful.
           </span>
         ) : (
           <span className="text-fg-dim">

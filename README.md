@@ -162,6 +162,30 @@ suite — see the PR description for exactly what was checked.
 - **Phase 5 — Accessibility & reduced motion**: full `prefers-reduced-motion`
   compliance audit across every animated surface.
 
+## Step 5 — The Lab
+
+The LAB is a typed, routeable local experiment catalog. The Projects exit derives
+its unregistered-module count from `LAB_EXPERIMENTS`; it is a playful entrance,
+not authentication. The sector navigator and object-like catalog work with
+keyboard/touch and link directly to `/lab/neural-system`, `/lab/parvez-arcade`,
+`/lab/gear-system`, `/lab/physics-playground`, and `/lab/distributed-system`.
+The final two catalog entries open illustrative sample retrospectives and are
+explicitly not claims about real abandoned work.
+
+- **Neural System** is a deterministic local retrieval → context → generation
+  teaching mock; it performs no LLM inference and contacts no service.
+- **Parvez Arcade** reuses the browser Arrow Puzzle and Aim Trainer prototypes.
+  Their reported figures are session measurements, not portfolio metrics.
+- **Gear System** is a procedural browser diagram, not a Blender-authored asset.
+- **Physics Playground** uses constant surface-gravity presets and a simplified
+  vacuum projectile equation: mass intentionally does not affect trajectory.
+- **Distributed System** exposes qualitative/synthetic capacity, queue, latency,
+  and error calculations. It is educational, not production benchmark evidence.
+
+The immersive routes deliberately omit the global HUD and contain a browser-back
+compatible **Return to Lab** link. No user data, analytics, accounts, uploads,
+or external AI services are used by these Lab experiences.
+
 ## Notes on Phase 2 content
 
 Real project write-ups, employment history, and contact details aren't in
