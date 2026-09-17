@@ -9,6 +9,7 @@ import { SectionShell } from "./SectionShell";
 import { ProjectCard } from "./projects/ProjectCard";
 import { ProjectFilterBar } from "./projects/ProjectFilterBar";
 import { RealProjectFeature } from "./projects/RealProjectFeature";
+import { LAB_EXPERIMENTS } from "@/lib/data/lab-experiments";
 
 const TIER_ORDER: ProjectTier[] = [...PROJECT_TIERS];
 
@@ -104,15 +105,9 @@ export function ProjectsSection() {
         <p className="font-mono text-fg text-sm tracking-[0.2em] uppercase">
           PROJECT DATABASE COMPLETE
         </p>
-        <p className="font-mono text-fg-dim text-xs tracking-[0.2em] uppercase">
-          BUT...
-        </p>
-        <p className="font-mono text-fg-dim max-w-md text-xs leading-relaxed tracking-[0.15em] uppercase">
-          There are things I build that don&apos;t belong in a portfolio.
-        </p>
-        <p className="text-glow-magenta font-mono text-sm tracking-[0.25em] uppercase">
-          Welcome to the lab.
-        </p>
+        <p className="font-mono text-fg-dim text-xs tracking-[0.2em] uppercase">&gt; SEARCHING FOR UNREGISTERED MODULES...</p>
+        <p className="text-neon-yellow font-mono text-xs tracking-[0.18em] uppercase">{LAB_EXPERIMENTS.length} UNREGISTERED EXPERIMENTS FOUND</p>
+        <a href="#lab" className="mt-3 border border-neon-magenta px-5 py-3 font-mono text-xs tracking-[.2em] text-neon-magenta hover:bg-neon-magenta/10">RESTRICTED / EXPERIMENT LAB / ACCESS REQUIRED / ENTER</a>
       </div>
     </SectionShell>
   );

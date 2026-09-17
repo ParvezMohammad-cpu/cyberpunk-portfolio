@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Direction = "up" | "down" | "left" | "right";
 
 const GRID_SIZE = 6;
 const START: [number, number] = [0, 0];
 const GOAL: [number, number] = [5, 5];
+const OPTIMAL_MOVES = 2;
 // 1 = wall. A small fixed level designed so the goal is reachable but not
 // trivially adjacent — the point is a real slide-until-blocked puzzle, not
 // a placeholder CTA.
@@ -63,13 +64,27 @@ const DIRECTION_KEYS: Record<string, Direction> = {
 export function ArrowPuzzle() {
   const [position, setPosition] = useState<[number, number]>(START);
   const [moves, setMoves] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
+  const startedAt = useRef<number | null>(null);
+  const pausedAt = useRef<number | null>(null);
+  const completed = useRef(false);
   const won = position[0] === GOAL[0] && position[1] === GOAL[1];
 
   const move = useCallback(
     (direction: Direction) => {
       if (won) return;
-      setPosition((current) => slide(current, direction));
-      setMoves((count) => count + 1);
+      setPosition((current) => {
+        const next = slide(current, direction);
+        if (next[0] !== current[0] || next[1] !== current[1]) {
+          if (startedAt.current === null) startedAt.current = performance.now();
+          setMoves((count) => count + 1);
+          if (next[0] === GOAL[0] && next[1] === GOAL[1] && !completed.current) {
+            completed.current = true;
+            setElapsed(performance.now() - startedAt.current);
+          }
+        }
+        return next;
+      });
     },
     [won]
   );
@@ -85,9 +100,31 @@ export function ArrowPuzzle() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [move]);
 
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (startedAt.current !== null && !won && pausedAt.current === null) {
+        setElapsed(performance.now() - startedAt.current);
+      }
+    }, 100);
+    const visibility = () => {
+      if (document.hidden && startedAt.current !== null && pausedAt.current === null) {
+        pausedAt.current = performance.now();
+      } else if (!document.hidden && pausedAt.current !== null && startedAt.current !== null) {
+        startedAt.current += performance.now() - pausedAt.current;
+        pausedAt.current = null;
+        completed.current = false;
+      }
+    };
+    document.addEventListener("visibilitychange", visibility);
+    return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange", visibility); };
+  }, [won]);
+
   const restart = () => {
     setPosition(START);
     setMoves(0);
+    setElapsed(0);
+    startedAt.current = null;
+    pausedAt.current = null;
   };
 
   return (
@@ -182,7 +219,7 @@ export function ArrowPuzzle() {
       <p role="status" className="mt-3 text-center font-mono text-sm">
         {won ? (
           <span className="text-glow-cyan uppercase tracking-[0.2em]">
-            Solved in {moves} moves — press Restart to play again.
+            Level complete / moves {moves} / time {(elapsed / 1000).toFixed(1)}s / efficiency {Math.min(100, Math.round((OPTIMAL_MOVES / Math.max(moves, 1)) * 100))}% — experiment successful.
           </span>
         ) : (
           <span className="text-fg-dim">
