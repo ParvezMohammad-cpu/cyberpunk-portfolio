@@ -22,7 +22,7 @@ export const SectionShell = forwardRef<HTMLElement, SectionShellProps>(
       <section
         ref={ref}
         id={meta.id}
-        className="relative flex min-h-screen w-full flex-col items-center justify-center gap-6 overflow-hidden bg-void px-6 py-24 text-center"
+        className="relative flex min-h-screen w-full flex-col items-center justify-center gap-6 overflow-hidden bg-void/80 px-6 py-24 text-center"
       >
         <div className="bg-circuit-grid pointer-events-none absolute inset-0 opacity-20" />
         <span
