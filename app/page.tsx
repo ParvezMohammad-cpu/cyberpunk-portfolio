@@ -12,6 +12,7 @@ import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { LabSection } from "@/components/sections/LabSection";
 import { JourneySection } from "@/components/sections/JourneySection";
 import { ContactSection } from "@/components/sections/ContactSection";
+import { ExperimentalLayer } from "@/components/three/ExperimentalLayer";
 
 export default function Home() {
   const lenisRef = useLenis();
@@ -26,9 +27,10 @@ export default function Home() {
       {shouldShowBoot === false && (
         <>
           <SkipLink />
+          <ExperimentalLayer />
           <ScanlineOverlay />
           <Hud lenisRef={lenisRef} />
-          <main id="main-content" tabIndex={-1}>
+          <main id="main-content" tabIndex={-1} className="relative z-10">
             <IntroSection />
             <EngineeringSection />
             <ProjectsSection />
