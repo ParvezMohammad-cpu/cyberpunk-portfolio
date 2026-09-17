@@ -7,6 +7,7 @@ export interface ContactAction {
   href?: string;
   download?: boolean;
   external?: boolean;
+  triggersPreview?: boolean;
   unavailableReason?: string;
   ownerVerification?: string;
 }
@@ -58,6 +59,7 @@ export const CONTACT_ACTIONS: ContactAction[] = [
     unavailableReason:
       "The repository only contained a placeholder email, so no mailto link is rendered.",
     ownerVerification: "Provide the real email address to enable native mailto activation.",
+    triggersPreview: true,
   },
   {
     id: "linkedin",

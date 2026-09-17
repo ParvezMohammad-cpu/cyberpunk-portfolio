@@ -35,8 +35,8 @@ export function ContactSection() {
   }, [outroState, prefersReducedMotion]);
 
   const restoreContact = () => setOutroState("idle");
-  const previewTriggerHandlers = (actionId: string) =>
-    actionId === "email"
+  const previewTriggerHandlers = (triggersPreview?: boolean) =>
+    triggersPreview
       ? {
           onFocus: () => outroState === "idle" && setOutroState("preview"),
           onBlur: () => outroState === "preview" && setOutroState("idle"),
@@ -86,7 +86,7 @@ export function ContactSection() {
                   download={action.download || undefined}
                   target={action.external ? "_blank" : undefined}
                   rel={action.external ? "noopener noreferrer" : undefined}
-                  {...previewTriggerHandlers(action.id)}
+                  {...previewTriggerHandlers(action.triggersPreview)}
                   className="border-border-dim bg-black-glass/70 focus-visible:outline-neon-cyan flex min-h-28 flex-col justify-between border p-4 text-left transition-colors hover:border-neon-cyan focus-visible:outline focus-visible:outline-2"
                 >
                   <span className="font-mono text-xs tracking-[0.25em] text-neon-cyan">
@@ -101,7 +101,7 @@ export function ContactSection() {
                 <button
                   type="button"
                   aria-disabled="true"
-                  {...previewTriggerHandlers(action.id)}
+                  {...previewTriggerHandlers(action.triggersPreview)}
                   className="border-border-dim bg-black-glass/40 focus-visible:outline-neon-cyan flex min-h-28 w-full flex-col justify-between border p-4 text-left opacity-70 focus-visible:outline focus-visible:outline-2"
                 >
                   <span className="font-mono text-xs tracking-[0.25em] text-fg-dim">

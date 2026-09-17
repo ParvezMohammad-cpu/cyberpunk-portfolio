@@ -20,10 +20,10 @@ export function useActiveSection(): SectionId {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        const viewportCenter = window.innerHeight / 2;
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => {
-            const viewportCenter = window.innerHeight / 2;
             const distanceToViewportCenter = (rect: DOMRectReadOnly) => {
               if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
                 return 0;

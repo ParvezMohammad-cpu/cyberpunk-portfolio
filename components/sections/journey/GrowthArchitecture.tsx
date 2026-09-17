@@ -78,17 +78,6 @@ export function GrowthArchitecture() {
         </ol>
         <p className="mt-4 text-xs leading-relaxed text-fg-dim">{activeStage.note}</p>
       </div>
-
-      <div className="sr-only">
-        <p>Static fallback:</p>
-        <ul>
-          {GROWTH_STAGES.map((stage) => (
-            <li key={`fallback-${stage.id}`}>
-              {stage.label}: {stage.flow.join(" to ")}.
-            </li>
-          ))}
-        </ul>
-      </div>
     </section>
   );
 }
