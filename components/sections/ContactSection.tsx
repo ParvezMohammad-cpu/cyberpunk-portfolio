@@ -35,7 +35,19 @@ export function ContactSection() {
   }, [outroState, prefersReducedMotion]);
 
   const restoreContact = () => setOutroState("idle");
+  const previewTriggerHandlers = (actionId: string) =>
+    actionId === "email"
+      ? {
+          onFocus: () => setOutroState("preview"),
+          onBlur: () => outroState === "preview" && setOutroState("idle"),
+          onMouseEnter: () => setOutroState("preview"),
+          onMouseLeave: () => outroState === "preview" && setOutroState("idle"),
+        }
+      : {};
 
+  // Contact intentionally uses a custom near-empty section instead of
+  // SectionShell so the final scene can quiet the HUD/background language while
+  // still preserving the shared section id, reveal hook, and heading semantics.
   return (
     <section
       ref={ref}
@@ -74,10 +86,7 @@ export function ContactSection() {
                   download={action.download || undefined}
                   target={action.external ? "_blank" : undefined}
                   rel={action.external ? "noopener noreferrer" : undefined}
-                  onFocus={() => action.id === "email" && setOutroState("preview")}
-                  onBlur={() => outroState === "preview" && setOutroState("idle")}
-                  onMouseEnter={() => action.id === "email" && setOutroState("preview")}
-                  onMouseLeave={() => outroState === "preview" && setOutroState("idle")}
+                  {...previewTriggerHandlers(action.id)}
                   className="border-border-dim bg-black-glass/70 focus-visible:outline-neon-cyan flex min-h-28 flex-col justify-between border p-4 text-left transition-colors hover:border-neon-cyan focus-visible:outline focus-visible:outline-2"
                 >
                   <span className="font-mono text-xs tracking-[0.25em] text-neon-cyan">
@@ -92,10 +101,7 @@ export function ContactSection() {
                 <button
                   type="button"
                   aria-disabled="true"
-                  onFocus={() => action.id === "email" && setOutroState("preview")}
-                  onBlur={() => outroState === "preview" && setOutroState("idle")}
-                  onMouseEnter={() => action.id === "email" && setOutroState("preview")}
-                  onMouseLeave={() => outroState === "preview" && setOutroState("idle")}
+                  {...previewTriggerHandlers(action.id)}
                   className="border-border-dim bg-black-glass/40 focus-visible:outline-neon-cyan flex min-h-28 w-full flex-col justify-between border p-4 text-left opacity-70 focus-visible:outline focus-visible:outline-2"
                 >
                   <span className="font-mono text-xs tracking-[0.25em] text-fg-dim">

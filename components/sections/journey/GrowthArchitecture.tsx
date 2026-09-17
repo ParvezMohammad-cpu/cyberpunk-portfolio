@@ -87,8 +87,14 @@ export function GrowthArchitecture() {
       </div>
 
       <div className="sr-only">
-        Static fallback: early stage is CODE to APPLICATION. Later stage is USERS
-        to CLOUD/CDN to FRONTEND to API to DATA to OBSERVABILITY.
+        <p>Static fallback:</p>
+        <ul>
+          {GROWTH_STAGES.map((stage) => (
+            <li key={`fallback-${stage.id}`}>
+              {stage.label}: {stage.flow.join(" to ")}.
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
