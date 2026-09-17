@@ -186,6 +186,47 @@ The immersive routes deliberately omit the global HUD and contain a browser-back
 compatible **Return to Lab** link. No user data, analytics, accounts, uploads,
 or external AI services are used by these Lab experiences.
 
+## Step 6 — Journey and final Contact scene
+
+The Journey and Contact sections now implement the Step 6 storyboard with typed,
+owner-editable content in `lib/data/journey.ts` and `lib/data/contact.ts`.
+
+- **Lab → Journey entrance** — the existing Lab exit now resolves into
+  `> ALL EXPERIMENTS ARCHIVED`, `> SYSTEM HISTORY REQUESTED...`, and
+  `> LOADING JOURNEY`, then exposes a normal `#journey` link. This is narrative
+  copy only; it does not archive data, lock scroll, or require a timed gate.
+- **Journey circuit path** — `components/sections/JourneySection.tsx` renders a
+  semantic ordered narrative enhanced by a scoped GSAP/ScrollTrigger SVG path.
+  The readable DOM content is available without animation, scripting effects, or
+  WebGL, and reduced-motion users see the stable completed path.
+- **Verified and unknown chronology** — the IIITP/B.Tech/graduation 2024,
+  DESI QnA SDE Intern Jan 2024–Jun 2024, and MAQ SOFTWARE Software Engineer
+  entries come from the owner brief. MAQ dates, exact degree expansion/branch,
+  personal reflection wording, current-state freshness, verified email,
+  LinkedIn URL, and the final résumé PDF still require owner confirmation.
+- **Growth architecture** — `GrowthArchitecture.tsx` replaces skill bars with
+  keyboard/touch-operable stage controls. The early `CODE → APPLICATION` and
+  later `USERS → CLOUD/CDN → FRONTEND → API → DATA → OBSERVABILITY` diagrams
+  are labeled conceptual illustrations, not verified production topology.
+- **Reflections and evolution** — the three reflection cards are neutral
+  engineering principles, not attributed autobiographical quotes. The
+  `DEVELOPER → BUILDER → ENGINEER → SYSTEM THINKER → ?` centerpiece is a
+  narrative growth model, not a promotion/title history.
+- **Future path** — the Journey ends with `> FUTURE NODE NOT FOUND`, “Maybe
+  that’s the point.” and `WHAT SHOULD BE BUILT NEXT?`, leading directly into
+  Contact without a blank page or forced waiting state.
+- **Final Contact scene** — `components/sections/ContactSection.tsx` is a quiet,
+  near-empty final scene with `EMAIL`, `LINKEDIN`, `GITHUB`, and
+  `DOWNLOAD RESUME` actions. GitHub and the existing `/resume.pdf` asset are
+  functional; email and LinkedIn are intentionally rendered unavailable because
+  the repository only had placeholder values. The old client-only contact form
+  remains in the tree for historical Phase 2 code, but Step 6 does not render or
+  submit a form.
+- **Optional outro** — Contact includes an explicitly initiated, replayable local
+  outro (`> SESSION ENDING` → `> CONNECTION REMAINS OPEN`). It never sends data,
+  prevents contact links from activating, traps focus, steals scroll, or makes
+  the portfolio inaccessible; Skip/Return restores the Contact scene.
+
 ## Notes on Phase 2 content
 
 Real project write-ups, employment history, and contact details aren't in
@@ -194,6 +235,9 @@ this repository yet, so `lib/data/projects.ts`, `lib/data/experience.ts`, and
 Placeholder projects/experience entries render a visible **PLACEHOLDER** tag
 in the UI; swap the data files with verified content and the tag disappears
 automatically (it's driven by an `isPlaceholder` flag, not hardcoded markup).
+Step 6 additionally documents owner-verification notes in `lib/data/journey.ts`
+and keeps unverified email/LinkedIn actions disabled rather than linking to fake
+contact destinations.
 
 ## Notes on this implementation
 

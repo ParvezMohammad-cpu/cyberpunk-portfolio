@@ -186,5 +186,7 @@ export interface ContactLink {
   id: string;
   label: string;
   value: string;
-  href: string;
+  href?: string;
+  isPlaceholder?: boolean;
+  unavailableReason?: string;
 }
