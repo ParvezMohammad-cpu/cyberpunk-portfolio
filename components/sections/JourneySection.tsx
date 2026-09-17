@@ -157,6 +157,15 @@ export function JourneySection() {
                     <p className="mt-2 font-mono text-sm text-neon-cyan">
                       {node.organization} / {node.title}
                     </p>
+                    <p
+                      className={`mt-3 inline-flex border px-2 py-1 font-mono text-[0.6rem] tracking-[0.18em] uppercase ${
+                        node.verified
+                          ? "border-neon-cyan/50 text-neon-cyan"
+                          : "border-neon-magenta/50 text-neon-magenta"
+                      }`}
+                    >
+                      {node.verified ? "Verified source" : "Owner verification needed"}
+                    </p>
                     <p className="mt-4 text-sm leading-relaxed text-fg-dim">
                       {node.summary}
                     </p>

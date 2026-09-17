@@ -38,9 +38,9 @@ export function ContactSection() {
   const previewTriggerHandlers = (actionId: string) =>
     actionId === "email"
       ? {
-          onFocus: () => setOutroState("preview"),
+          onFocus: () => outroState === "idle" && setOutroState("preview"),
           onBlur: () => outroState === "preview" && setOutroState("idle"),
-          onMouseEnter: () => setOutroState("preview"),
+          onMouseEnter: () => outroState === "idle" && setOutroState("preview"),
           onMouseLeave: () => outroState === "preview" && setOutroState("idle"),
         }
       : {};
