@@ -30,6 +30,7 @@ const hotspots = [
   { id: "mist", label: "MIST // 07", title: "Memory weather", copy: "Fog is not atmosphere alone: it is the valley's short-term archive." },
 ];
 const cameraPositions = [[0, 1.1, 8], [2.4, 1.8, 6.4], [-2.8, 2.8, 7.5]] as const;
+const chapterId = (index: number) => `biosphere-chapter-${index}`;
 
 function Terrain({ reduced }: { reduced: boolean }) {
   const mesh = useRef<THREE.Mesh>(null);
@@ -119,14 +120,13 @@ export function BiosphereExperience() {
   const [entered, setEntered] = useState(false);
   const [chapter, setChapter] = useState(0);
   const [selectedHotspot, setSelectedHotspot] = useState<string | null>(null);
-  const [cursorActive, setCursorActive] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const lenisRef = useLenis();
   const shell = useRef<HTMLDivElement>(null);
   const cursor = useRef<HTMLDivElement>(null);
 
   const scrollToChapter = useCallback((index: number) => {
-    document.getElementById(`biosphere-chapter-${index}`)?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+    document.getElementById(chapterId(index))?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
   }, [prefersReducedMotion]);
 
   useGSAP(() => {
@@ -138,7 +138,7 @@ export function BiosphereExperience() {
       });
       chapters.forEach((_, index) => {
         ScrollTrigger.create({
-          trigger: `#biosphere-chapter-${index}`,
+          trigger: `#${chapterId(index)}`,
           start: "top center",
           end: "bottom center",
           onEnter: () => setChapter(index),
@@ -159,12 +159,11 @@ export function BiosphereExperience() {
       ref={shell}
       className={styles.shell}
       onMouseMove={(event) => {
-        setCursorActive(true);
         cursor.current?.style.setProperty("--cursor-x", `${event.clientX}px`);
         cursor.current?.style.setProperty("--cursor-y", `${event.clientY}px`);
       }}
     >
-      <div ref={cursor} className={`${styles.cursor} ${cursorActive ? styles.cursorVisible : ""}`} aria-hidden="true"><Crosshair size={16} /></div>
+      <div ref={cursor} className={styles.cursor} aria-hidden="true"><Crosshair size={16} /></div>
       <div className={styles.canvasWrap} aria-hidden="true">
         <Canvas dpr={[1, 1.7]} camera={{ position: [0, 1.1, 8], fov: 48 }} gl={{ antialias: true, powerPreference: "high-performance" }}>
           <Environment reduced={prefersReducedMotion} chapter={chapter} />
@@ -199,7 +198,7 @@ export function BiosphereExperience() {
           </aside>
           <div className={styles.markerLayer}>
             {hotspots.map((hotspot, index) => (
-              <button key={hotspot.id} className={`${styles.marker} ${styles[`marker${index}`]}`} onClick={() => setSelectedHotspot(hotspot.id)} onMouseEnter={() => setCursorActive(true)} aria-label={`Inspect ${hotspot.title}`}>
+              <button key={hotspot.id} className={`${styles.marker} ${styles[`marker${index}`]}`} onClick={() => setSelectedHotspot(hotspot.id)} aria-label={`Inspect ${hotspot.title}`}>
                 <span /><em>{hotspot.label}</em>
               </button>
             ))}
@@ -216,7 +215,7 @@ export function BiosphereExperience() {
           <div className={styles.scrollPrompt}><ArrowDown size={14} /> SCROLL TO DESCEND</div>
           <div className={styles.scrollTrack}>
             {chapters.map((item, index) => (
-              <section id={`biosphere-chapter-${index}`} className={styles.chapter} key={item.code}>
+              <section id={chapterId(index)} className={styles.chapter} key={item.code}>
                 <div data-bio-reveal>
                   <p>{item.code}</p><h2>{item.title}</h2><span>{item.copy}</span>
                 </div>
