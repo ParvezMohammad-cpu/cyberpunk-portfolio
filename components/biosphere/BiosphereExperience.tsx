@@ -29,6 +29,7 @@ const hotspots = [
   { id: "canopy", label: "CANOPY // 04", title: "Signal canopy", copy: "Low-poly strata harvest ambient data and refract it into weather." },
   { id: "mist", label: "MIST // 07", title: "Memory weather", copy: "Fog is not atmosphere alone: it is the valley's short-term archive." },
 ];
+// Arrival, valley-side symbiosis, and elevated ascent camera frames.
 const cameraPositions = [[0, 1.1, 8], [2.4, 1.8, 6.4], [-2.8, 2.8, 7.5]] as const;
 const chapterId = (index: number) => `biosphere-chapter-${index}`;
 const desktopMediaQuery = "(min-width: 800px)";
@@ -91,7 +92,7 @@ function CameraRig({ reduced, chapter }: { reduced: boolean; chapter: number }) 
   const { camera } = useThree();
   const target = useMemo(() => new THREE.Vector3(), []);
   useFrame((state) => {
-    const position = cameraPositions[chapter];
+    const position = cameraPositions[Math.min(Math.max(chapter, 0), cameraPositions.length - 1)];
     const pointerX = reduced ? 0 : state.pointer.x * 0.35;
     const pointerY = reduced ? 0 : state.pointer.y * 0.2;
     target.set(position[0] + pointerX, position[1] + pointerY, position[2]);
@@ -125,6 +126,10 @@ export function BiosphereExperience() {
   const lenisRef = useLenis();
   const shell = useRef<HTMLDivElement>(null);
   const cursor = useRef<HTMLDivElement>(null);
+  const selectedMarker = useMemo(
+    () => hotspots.find(({ id }) => id === selectedHotspot),
+    [selectedHotspot],
+  );
 
   const scrollToChapter = useCallback((index: number) => {
     lenisRef.current?.scrollTo(`#${chapterId(index)}`, { immediate: prefersReducedMotion });
@@ -135,10 +140,11 @@ export function BiosphereExperience() {
     let frame: number | null = null;
     let x = -100;
     let y = -100;
+    const cursorElement = cursor.current;
     const desktopQuery = window.matchMedia(desktopMediaQuery);
     const updateCursor = () => {
-      cursor.current?.style.setProperty("--cursor-x", `${x}px`);
-      cursor.current?.style.setProperty("--cursor-y", `${y}px`);
+      cursorElement?.style.setProperty("--cursor-x", `${x}px`);
+      cursorElement?.style.setProperty("--cursor-y", `${y}px`);
       frame = null;
     };
     const trackCursor = (event: PointerEvent) => {
@@ -151,6 +157,8 @@ export function BiosphereExperience() {
     return () => {
       window.removeEventListener("pointermove", trackCursor);
       if (frame !== null) window.cancelAnimationFrame(frame);
+      cursorElement?.style.setProperty("--cursor-x", "-100px");
+      cursorElement?.style.setProperty("--cursor-y", "-100px");
     };
   }, [prefersReducedMotion]);
 
@@ -221,15 +229,12 @@ export function BiosphereExperience() {
               </button>
             ))}
           </div>
-          {selectedHotspot && (() => {
-            const hotspot = hotspots.find(({ id }) => id === selectedHotspot);
-            return hotspot ? (
-              <section className={styles.panel} aria-live="polite">
-                <button onClick={() => setSelectedHotspot(null)} aria-label="Close information panel"><X size={16} /></button>
-                <p>{hotspot.label}</p><h2>{hotspot.title}</h2><span>{hotspot.copy}</span>
-              </section>
-            ) : null;
-          })()}
+          {selectedMarker && (
+            <section className={styles.panel} aria-live="polite">
+              <button onClick={() => setSelectedHotspot(null)} aria-label="Close information panel"><X size={16} /></button>
+              <p>{selectedMarker.label}</p><h2>{selectedMarker.title}</h2><span>{selectedMarker.copy}</span>
+            </section>
+          )}
           <div className={styles.scrollPrompt}><ArrowDown size={14} /> SCROLL TO DESCEND</div>
           <div className={styles.scrollTrack}>
             {chapters.map((item, index) => (
