@@ -201,12 +201,12 @@
   line-height: 1.6;
 }
 
-.chapter:nth-child(2) {
+.chapterEnd {
   justify-content: flex-end;
   text-align: right;
 }
 
-.chapter:nth-child(3) {
+.chapterBottom {
   align-items: flex-end;
 }
 
@@ -372,7 +372,7 @@
     padding: 14vh 1.4rem;
   }
 
-  .chapter:nth-child(2) {
+  .chapterEnd {
     justify-content: flex-start;
     text-align: left;
   }

@@ -135,13 +135,14 @@ export function BiosphereExperience() {
     let frame: number | null = null;
     let x = -100;
     let y = -100;
+    const desktopQuery = window.matchMedia(desktopMediaQuery);
     const updateCursor = () => {
       cursor.current?.style.setProperty("--cursor-x", `${x}px`);
       cursor.current?.style.setProperty("--cursor-y", `${y}px`);
       frame = null;
     };
     const trackCursor = (event: PointerEvent) => {
-      if (!window.matchMedia(desktopMediaQuery).matches) return;
+      if (!desktopQuery.matches) return;
       x = event.clientX;
       y = event.clientY;
       if (frame === null) frame = window.requestAnimationFrame(updateCursor);
@@ -232,7 +233,11 @@ export function BiosphereExperience() {
           <div className={styles.scrollPrompt}><ArrowDown size={14} /> SCROLL TO DESCEND</div>
           <div className={styles.scrollTrack}>
             {chapters.map((item, index) => (
-              <section id={chapterId(index)} className={styles.chapter} key={item.code}>
+              <section
+                id={chapterId(index)}
+                className={`${styles.chapter} ${index === 1 ? styles.chapterEnd : ""} ${index === 2 ? styles.chapterBottom : ""}`}
+                key={item.code}
+              >
                 <div data-bio-reveal>
                   <p>{item.code}</p><h2>{item.title}</h2><span>{item.copy}</span>
                 </div>
