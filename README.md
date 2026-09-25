@@ -34,6 +34,23 @@ plays once per browser session (tracked via `sessionStorage`). To replay it
 for testing, either open a new incognito/private session, or append
 `?boot=1` to the URL, e.g. `http://localhost:3000/?boot=1`.
 
+### NEON BIOSPHERE demo
+
+[`/biosphere`](http://localhost:3000/biosphere) is an isolated experimental
+microsite; the existing portfolio remains at `/`. Its procedural React Three
+Fiber scene uses a displaced low-poly terrain, emissive monolith, fog, lights,
+and capped particle/star fields. GSAP ScrollTrigger synchronizes the three
+HTML chapters with camera states, while Lenis handles smooth scrolling.
+
+- Select **ENTER THE BIOSPHERE** to begin, scroll (or select the numbered
+  chapter controls) to progress, and select the floating markers for details.
+- The scanner cursor, camera parallax, and continuous particles are reduced
+  when `prefers-reduced-motion` is enabled; readable chapter and marker content
+  remains available.
+- DPR is capped and particle counts are reduced for reduced-motion users; the
+  compact mobile HUD hides nonessential coordinate/status detail.
+- **RETURN TO PORTFOLIO** is always available in the demo HUD.
+
 ```bash
 npm run build   # production build
 npm run start   # run the production build
