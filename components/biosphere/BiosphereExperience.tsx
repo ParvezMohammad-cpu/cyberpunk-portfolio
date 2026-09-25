@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGSAP } from "@gsap/react";
 import { ArrowDown, ArrowUpRight, Crosshair, Radio, RotateCcw, X } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { gsap, registerGsap, ScrollTrigger } from "@/lib/gsap";
 import { useLenis } from "@/hooks/useLenis";
@@ -126,7 +126,30 @@ export function BiosphereExperience() {
   const cursor = useRef<HTMLDivElement>(null);
 
   const scrollToChapter = useCallback((index: number) => {
-    document.getElementById(chapterId(index))?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+    lenisRef.current?.scrollTo(`#${chapterId(index)}`, { immediate: prefersReducedMotion });
+  }, [lenisRef, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    let frame: number | null = null;
+    let x = -100;
+    let y = -100;
+    const updateCursor = () => {
+      cursor.current?.style.setProperty("--cursor-x", `${x}px`);
+      cursor.current?.style.setProperty("--cursor-y", `${y}px`);
+      frame = null;
+    };
+    const trackCursor = (event: PointerEvent) => {
+      if (window.innerWidth < 800) return;
+      x = event.clientX;
+      y = event.clientY;
+      if (frame === null) frame = window.requestAnimationFrame(updateCursor);
+    };
+    window.addEventListener("pointermove", trackCursor);
+    return () => {
+      window.removeEventListener("pointermove", trackCursor);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
   }, [prefersReducedMotion]);
 
   useGSAP(() => {
@@ -155,14 +178,7 @@ export function BiosphereExperience() {
   };
 
   return (
-    <main
-      ref={shell}
-      className={styles.shell}
-      onMouseMove={(event) => {
-        cursor.current?.style.setProperty("--cursor-x", `${event.clientX}px`);
-        cursor.current?.style.setProperty("--cursor-y", `${event.clientY}px`);
-      }}
-    >
+    <main ref={shell} className={styles.shell}>
       <div ref={cursor} className={styles.cursor} aria-hidden="true"><Crosshair size={16} /></div>
       <div className={styles.canvasWrap} aria-hidden="true">
         <Canvas dpr={[1, 1.7]} camera={{ position: [0, 1.1, 8], fov: 48 }} gl={{ antialias: true, powerPreference: "high-performance" }}>
