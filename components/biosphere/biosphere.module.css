@@ -1,20 +1,412 @@
-.shell { min-height: 100vh; background: #02040b; color: #e8fcfa; overflow: clip; font-family: Arial, Helvetica, sans-serif; }
-.canvasWrap { position: fixed; inset: 0; z-index: 0; }
-.opening { position: fixed; inset: 0; z-index: 3; display: grid; place-content: center; padding: 2rem; background: radial-gradient(circle at 50% 48%, rgba(14, 36, 62, .22), #02040b 68%); text-align: center; }
-.opening::before, .shell::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(126,255,241,.035) 0 1px, transparent 1px 4px); mix-blend-mode: screen; }
-.loadingLine { width: min(210px, 55vw); height: 1px; background: #204454; margin: 0 auto 1.8rem; overflow: hidden; }.loadingLine span { display: block; width: 68%; height: 100%; background: #89fff0; animation: load 1.7s ease-in-out infinite alternate; }
-.eyebrow, .openingCopy, .hud, .scrollPrompt, .panel p, .chapter p { letter-spacing: .16em; font-size: .62rem; }
-.opening h1 { margin: 0; font-size: clamp(3.5rem, 11vw, 9rem); line-height: .78; letter-spacing: -.08em; font-weight: 800; color: #e9fffc; text-shadow: 0 0 32px rgba(81,255,230,.25); }
-.openingCopy { margin: 2rem 0; color: #8da7b2; letter-spacing: .07em; }
-.enterButton, .exitChapter button { border: 1px solid rgba(151,255,238,.55); color: #c8fff6; background: rgba(1, 14, 25, .72); padding: .9rem 1.1rem; display: inline-flex; gap: .8rem; align-items: center; cursor: pointer; font-size: .65rem; letter-spacing: .15em; transition: .25s; }.enterButton:hover, .enterButton:focus-visible, .exitChapter button:hover { background: #a6fff0; color: #031116; box-shadow: 0 0 26px rgba(91,255,229,.45); }
-.hud { position: fixed; top: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-between; padding: 1.4rem 1.7rem; color: #9fb9c6; }.returnLink { color: #d9fff8; text-decoration: none; }.status { display: flex; align-items: center; gap: .35rem; color: #86ffe9; }.coordinates { font-variant-numeric: tabular-nums; }
-.chapterNav { position: fixed; z-index: 3; right: 1.6rem; top: 50%; display: grid; gap: .8rem; transform: translateY(-50%); }.chapterNav button { background: none; border: 0; color: #70909c; display: flex; align-items: center; gap: .55rem; cursor: pointer; font-size: .6rem; }.chapterNav i { display: block; width: 22px; height: 1px; background: currentColor; transition: .3s; }.chapterNav .activeChapter { color: #a6fff0; }.chapterNav .activeChapter i { width: 42px; }
-.scrollTrack { position: relative; z-index: 1; }.chapter { min-height: 100vh; display: flex; align-items: center; padding: 12vh 12vw; pointer-events: none; }.chapter > div { max-width: 380px; }.chapter p { color: #8dfff0; }.chapter h2 { margin: .4rem 0 1rem; font-size: clamp(2.8rem, 6vw, 6rem); letter-spacing: -.07em; line-height: .86; }.chapter span { color: #b3cbd1; line-height: 1.6; font-size: .9rem; }.chapter:nth-child(2) { justify-content: flex-end; text-align: right; }.chapter:nth-child(3) { align-items: flex-end; }.exitChapter { min-height: 72vh; justify-content: center; text-align: center; }.exitChapter button { margin-top: 1.5rem; pointer-events: auto; }
-.scrollPrompt { position: fixed; bottom: 1.4rem; left: 1.7rem; z-index: 3; color: #91abae; display: flex; align-items: center; gap: .5rem; animation: float 2s ease-in-out infinite; }
-.markerLayer { position: fixed; inset: 0; z-index: 2; pointer-events: none; }.marker { position: absolute; pointer-events: auto; background: none; border: 0; color: #bffff3; cursor: pointer; display: flex; align-items: center; gap: .4rem; font-size: .57rem; letter-spacing: .1em; }.marker span { width: 9px; height: 9px; border: 1px solid #a3fff0; border-radius: 50%; box-shadow: 0 0 14px #86ffe9; }.marker:hover span { transform: scale(1.8); background: #cafff6; }.marker0 { left: 48%; top: 49%; }.marker1 { left: 68%; top: 39%; }.marker2 { left: 29%; top: 57%; }
-.panel { position: fixed; z-index: 4; bottom: 4rem; right: 2rem; width: min(290px, calc(100vw - 3rem)); padding: 1.2rem; border: 1px solid rgba(164,255,239,.35); background: rgba(3, 14, 26, .83); backdrop-filter: blur(14px); }.panel button { position: absolute; top: .6rem; right: .6rem; background: transparent; border: 0; color: #bafff2; cursor: pointer; }.panel p { color: #89ffea; margin: 0; }.panel h2 { margin: .5rem 0; font-size: 1.25rem; }.panel span { color: #b6c6d0; font-size: .8rem; line-height: 1.5; }
-.cursor { display: none; }
-@keyframes load { to { transform: translateX(48%); } } @keyframes float { 50% { transform: translateY(-5px); } }
-@media (min-width: 800px) { .shell { cursor: crosshair; }.cursor { display: grid; place-items: center; position: fixed; left: var(--cursor-x, -100px); top: var(--cursor-y, -100px); z-index: 5; width: 34px; height: 34px; border: 1px solid rgba(157,255,239,.7); border-radius: 50%; color: #bafff5; pointer-events: none; transform: translate(-50%, -50%); mix-blend-mode: screen; } }
-@media (max-width: 640px) { .hud { padding: 1rem; }.coordinates, .status { display: none; }.chapter { padding: 14vh 1.4rem; }.chapter:nth-child(2) { justify-content: flex-start; text-align: left; }.chapterNav { right: .9rem; }.chapterNav button span { display: none; }.chapterNav .activeChapter i { width: 27px; }.marker em { display: none; }.marker1 { left: 73%; }.panel { right: 1rem; bottom: 3.4rem; }.scrollPrompt { left: 1rem; font-size: .52rem; } }
-@media (prefers-reduced-motion: reduce) { .loadingLine span, .scrollPrompt { animation: none; } }
+.shell {
+  min-height: 100vh;
+  background: #02040b;
+  color: #e8fcfa;
+  overflow: clip;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.canvasWrap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.opening {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-content: center;
+  padding: 2rem;
+  background: radial-gradient(circle at 50% 48%, rgba(14, 36, 62, 0.22), #02040b 68%);
+  text-align: center;
+}
+
+.opening::before,
+.shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(126, 255, 241, 0.035) 0 1px, transparent 1px 4px);
+  mix-blend-mode: screen;
+}
+
+.loadingLine {
+  width: min(210px, 55vw);
+  height: 1px;
+  margin: 0 auto 1.8rem;
+  overflow: hidden;
+  background: #204454;
+}
+
+.loadingLine span {
+  display: block;
+  width: 68%;
+  height: 100%;
+  background: #89fff0;
+  animation: load 1.7s ease-in-out infinite alternate;
+}
+
+.eyebrow,
+.openingCopy,
+.hud,
+.scrollPrompt,
+.panel p,
+.chapter p {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+}
+
+.opening h1 {
+  margin: 0;
+  color: #e9fffc;
+  font-size: clamp(3.5rem, 11vw, 9rem);
+  font-weight: 800;
+  line-height: 0.78;
+  letter-spacing: -0.08em;
+  text-shadow: 0 0 32px rgba(81, 255, 230, 0.25);
+}
+
+.openingCopy {
+  margin: 2rem 0;
+  color: #8da7b2;
+  letter-spacing: 0.07em;
+}
+
+.enterButton,
+.exitChapter button {
+  display: inline-flex;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid rgba(151, 255, 238, 0.55);
+  background: rgba(1, 14, 25, 0.72);
+  color: #c8fff6;
+  cursor: pointer;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  transition: 0.25s;
+}
+
+.enterButton:hover,
+.enterButton:focus-visible,
+.exitChapter button:hover {
+  background: #a6fff0;
+  color: #031116;
+  box-shadow: 0 0 26px rgba(91, 255, 229, 0.45);
+}
+
+.hud {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.4rem 1.7rem;
+  color: #9fb9c6;
+}
+
+.returnLink {
+  color: #d9fff8;
+  text-decoration: none;
+}
+
+.status,
+.scrollPrompt {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.status {
+  color: #86ffe9;
+}
+
+.coordinates {
+  font-variant-numeric: tabular-nums;
+}
+
+.chapterNav {
+  position: fixed;
+  top: 50%;
+  right: 1.6rem;
+  z-index: 3;
+  display: grid;
+  gap: 0.8rem;
+  transform: translateY(-50%);
+}
+
+.chapterNav button {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  border: 0;
+  background: none;
+  color: #70909c;
+  cursor: pointer;
+  font-size: 0.6rem;
+}
+
+.chapterNav i {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: currentColor;
+  transition: 0.3s;
+}
+
+.chapterNav .activeChapter {
+  color: #a6fff0;
+}
+
+.chapterNav .activeChapter i {
+  width: 42px;
+}
+
+.scrollTrack {
+  position: relative;
+  z-index: 1;
+}
+
+.chapter {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  padding: 12vh 12vw;
+  pointer-events: none;
+}
+
+.chapter > div {
+  max-width: 380px;
+}
+
+.chapter p {
+  color: #8dfff0;
+}
+
+.chapter h2 {
+  margin: 0.4rem 0 1rem;
+  font-size: clamp(2.8rem, 6vw, 6rem);
+  line-height: 0.86;
+  letter-spacing: -0.07em;
+}
+
+.chapter span {
+  color: #b3cbd1;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.chapter:nth-child(2) {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.chapter:nth-child(3) {
+  align-items: flex-end;
+}
+
+.exitChapter {
+  justify-content: center;
+  min-height: 72vh;
+  text-align: center;
+}
+
+.exitChapter button {
+  margin-top: 1.5rem;
+  pointer-events: auto;
+}
+
+.scrollPrompt {
+  position: fixed;
+  bottom: 1.4rem;
+  left: 1.7rem;
+  z-index: 3;
+  gap: 0.5rem;
+  color: #91abae;
+  animation: float 2s ease-in-out infinite;
+}
+
+.markerLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marker {
+  position: absolute;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  border: 0;
+  background: none;
+  color: #bffff3;
+  cursor: pointer;
+  font-size: 0.57rem;
+  letter-spacing: 0.1em;
+  pointer-events: auto;
+}
+
+.marker span {
+  width: 9px;
+  height: 9px;
+  border: 1px solid #a3fff0;
+  border-radius: 50%;
+  box-shadow: 0 0 14px #86ffe9;
+}
+
+.marker:hover span {
+  background: #cafff6;
+  transform: scale(1.8);
+}
+
+.marker0 {
+  top: 49%;
+  left: 48%;
+}
+
+.marker1 {
+  top: 39%;
+  left: 68%;
+}
+
+.marker2 {
+  top: 57%;
+  left: 29%;
+}
+
+.panel {
+  position: fixed;
+  right: 2rem;
+  bottom: 4rem;
+  z-index: 4;
+  width: min(290px, calc(100vw - 3rem));
+  padding: 1.2rem;
+  border: 1px solid rgba(164, 255, 239, 0.35);
+  background: rgba(3, 14, 26, 0.83);
+  backdrop-filter: blur(14px);
+}
+
+.panel button {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  border: 0;
+  background: transparent;
+  color: #bafff2;
+  cursor: pointer;
+}
+
+.panel p {
+  margin: 0;
+  color: #89ffea;
+}
+
+.panel h2 {
+  margin: 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.panel span {
+  color: #b6c6d0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.cursor {
+  display: none;
+}
+
+@keyframes load {
+  to {
+    transform: translateX(48%);
+  }
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (min-width: 800px) {
+  .shell {
+    cursor: crosshair;
+  }
+
+  .cursor {
+    position: fixed;
+    top: var(--cursor-y, -100px);
+    left: var(--cursor-x, -100px);
+    z-index: 5;
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid rgba(157, 255, 239, 0.7);
+    border-radius: 50%;
+    color: #bafff5;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .hud {
+    padding: 1rem;
+  }
+
+  .coordinates,
+  .status,
+  .marker em {
+    display: none;
+  }
+
+  .chapter {
+    padding: 14vh 1.4rem;
+  }
+
+  .chapter:nth-child(2) {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .chapterNav {
+    right: 0.9rem;
+  }
+
+  .chapterNav button span {
+    display: none;
+  }
+
+  .chapterNav .activeChapter i {
+    width: 27px;
+  }
+
+  .marker1 {
+    left: 73%;
+  }
+
+  .panel {
+    right: 1rem;
+    bottom: 3.4rem;
+  }
+
+  .scrollPrompt {
+    left: 1rem;
+    font-size: 0.52rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loadingLine span,
+  .scrollPrompt {
+    animation: none;
+  }
+}

@@ -31,6 +31,7 @@ const hotspots = [
 ];
 const cameraPositions = [[0, 1.1, 8], [2.4, 1.8, 6.4], [-2.8, 2.8, 7.5]] as const;
 const chapterId = (index: number) => `biosphere-chapter-${index}`;
+const desktopMediaQuery = "(min-width: 800px)";
 
 function Terrain({ reduced }: { reduced: boolean }) {
   const mesh = useRef<THREE.Mesh>(null);
@@ -140,7 +141,7 @@ export function BiosphereExperience() {
       frame = null;
     };
     const trackCursor = (event: PointerEvent) => {
-      if (window.innerWidth < 800) return;
+      if (!window.matchMedia(desktopMediaQuery).matches) return;
       x = event.clientX;
       y = event.clientY;
       if (frame === null) frame = window.requestAnimationFrame(updateCursor);
